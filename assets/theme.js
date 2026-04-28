@@ -25,6 +25,23 @@
     var vh = window.innerHeight;
     return clamp(-rect.top / Math.max(1, blockH - vh), 0, 1);
   }
+  // Remap 0→1 progress so the demo holds at peak in the middle.
+  // 0→inP : ramp up, inP→outP : hold at 1, outP→1 : down to 0 (or stays at 1 if no exit)
+  function holdProgress(p, inP, outP) {
+    inP = inP == null ? 0.35 : inP;
+    outP = outP == null ? 0.7 : outP;
+    if (p < inP) return easeInOutCubic(p / inP);
+    if (p < outP) return 1;
+    return 1; // stays at peak through the rest
+  }
+  // Same but with an exit phase that brings the demo back down
+  function holdAndExitProgress(p, inP, outP) {
+    inP = inP == null ? 0.3 : inP;
+    outP = outP == null ? 0.7 : outP;
+    if (p < inP) return easeInOutCubic(p / inP);
+    if (p < outP) return 1;
+    return 1 - easeInOutCubic((p - outP) / (1 - outP));
+  }
   function inView(block, threshold) {
     threshold = threshold || 0;
     var rect = block.getBoundingClientRect();
@@ -575,21 +592,24 @@
     var disc = sec.querySelector(".thin-disc");
     var card = sec.querySelector(".thin-card");
     var coin = sec.querySelector(".thin-coin");
-    var label = sec.querySelector(".thin-label");
+    var labels = sec.querySelectorAll(".thin-label");
     var raf = null;
     function update() {
       if (!inView(sec)) { raf = null; return; }
-      var p = blockProgress(sec);
-      // Disc enters from center, slides left
-      // Card enters from right
-      // Coin enters from far right
-      var discX = lerp(0, -180, easeInOutCubic(p));
-      var cardX = lerp(800, 0, easeInOutCubic(smoothstep(0.1, 0.6, p)));
-      var coinX = lerp(800, 180, easeInOutCubic(smoothstep(0.25, 0.8, p)));
+      var raw = blockProgress(sec);
+      // Hold-and-exit so the comparison sits visible at peak for the middle
+      // 50% of the scroll window
+      var p = holdAndExitProgress(raw, 0.25, 0.78);
+      var discX = lerp(0, -180, p);
+      var cardX = lerp(800, 0, smoothstep(0.1, 0.7, p));
+      var coinX = lerp(800, 180, smoothstep(0.25, 0.85, p));
       if (disc) disc.style.transform = "translateX(" + discX + "px)";
       if (card) card.style.transform = "translateX(" + cardX + "px)";
       if (coin) coin.style.transform = "translateX(" + coinX + "px)";
-      if (label) label.style.opacity = smoothstep(0.4, 0.7, p);
+      // Stagger label fade-in at progress peaks
+      if (labels[0]) labels[0].style.opacity = smoothstep(0.3, 0.6, p);
+      if (labels[1]) labels[1].style.opacity = smoothstep(0.5, 0.8, p);
+      if (labels[2]) labels[2].style.opacity = smoothstep(0.7, 0.95, p);
       raf = null;
     }
     window.addEventListener("scroll", function () { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
@@ -672,16 +692,17 @@
       var t = (performance.now() - startTime) / 1000;
       disc.holoMat.uniforms.uTime.value = t;
       emf.mat.uniforms.uTime.value = t;
-      var p = blockProgress(sec);
-      var chaos = lerp(1.0, 0.0, easeInOutCubic(p));
+      var raw = blockProgress(sec);
+      var p = holdProgress(raw, 0.45, 0.78);
+      var chaos = lerp(1.0, 0.0, p);
       emf.mat.uniforms.uChaos.value = chaos;
       disc.group.rotation.x = -Math.PI / 2 + Math.sin(t * 0.5) * 0.08;
       disc.group.rotation.z = t * 0.4;
-      disc.group.position.y = lerp(2.0, 0.0, easeInOutCubic(p));
-      disc.group.scale.setScalar(smoothstep(0.2, 0.7, p) * 0.4);
+      disc.group.position.y = lerp(2.0, 0.0, p);
+      disc.group.scale.setScalar(smoothstep(0.15, 0.5, p) * 0.4);
       emf.group.rotation.y = t * 0.15;
       emf.group.rotation.x = Math.sin(t * 0.3) * 0.08;
-      emf.group.scale.setScalar(lerp(1.0, 1.5, smoothstep(0.5, 1.0, p)));
+      emf.group.scale.setScalar(lerp(1.0, 1.5, smoothstep(0.4, 0.95, p)));
       if (chaosLabel) {
         chaosLabel.textContent = chaos > 0.5 ? "CHAOS" : "CALM";
         chaosLabel.style.color = chaos > 0.5 ? "#ff5a3c" : "#6ec3ff";
@@ -722,8 +743,9 @@
       requestAnimationFrame(tick);
       if (!inView(sec)) return;
       var t = (performance.now() - t0) / 1000;
-      var p = blockProgress(sec);
-      var distortion = lerp(0.5, 0.0, easeInOutCubic(p));
+      var raw = blockProgress(sec);
+      var p = holdProgress(raw, 0.4, 0.75);
+      var distortion = lerp(0.5, 0.0, p);
       path.setAttribute("d", buildPath(distortion, t));
       var pct = Math.round(p * 100);
       if (label) label.textContent = pct + "% harmonised";
@@ -804,12 +826,14 @@
     var raf = null;
     function update() {
       if (!inView(sec)) { raf = null; return; }
-      var p = blockProgress(sec);
+      var raw = blockProgress(sec);
+      var p = holdProgress(raw, 0.6, 0.85);
       var discs = sec.querySelectorAll(".stack-disc");
       discs.forEach(function (d, i) {
-        var enter = smoothstep(i * 0.25, i * 0.25 + 0.3, p);
-        var y = lerp(60, -i * 14, enter);
-        var rot = lerp(20 + i * 8, 0, enter);
+        // Each disc now enters in its own, more spread-out window
+        var enter = smoothstep(i * 0.22, i * 0.22 + 0.35, p);
+        var y = lerp(80, -i * 14, enter);
+        var rot = lerp(25 + i * 10, 0, enter);
         d.style.opacity = enter;
         d.style.transform = "translateY(" + y.toFixed(0) + "px) rotate(" + rot.toFixed(1) + "deg)";
       });
@@ -818,6 +842,329 @@
     window.addEventListener("scroll", function () { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
     update();
   }
+
+  /* =================================================================
+   * SCENE: PEEL — 3-stage application demo (peel → hover → press)
+   * Pure CSS, scroll-driven. The disc starts on a backing card,
+   * the backing peels away, the disc hovers, then descends onto a
+   * phone outline and stamps in place.
+   * ================================================================= */
+  function initScenePeel() {
+    var sec = document.querySelector("[data-scene-peel]");
+    if (!sec) return;
+    var disc = sec.querySelector(".peel-disc");
+    var backing = sec.querySelector(".peel-backing");
+    var phone = sec.querySelector(".peel-phone");
+    var stamp = sec.querySelector(".peel-stamp");
+    var labels = sec.querySelectorAll(".peel-step-label");
+    var raf = null;
+    function update() {
+      if (!inView(sec)) { raf = null; return; }
+      var raw = blockProgress(sec);
+      // 0 - 0.30 : peel (backing rotates away)
+      // 0.30 - 0.55 : hover (disc lifts, idle)
+      // 0.55 - 0.85 : press (disc descends to phone)
+      // 0.85 - 1.0  : settle (stamp ring pulses)
+      var stagePeel = smoothstep(0.0, 0.28, raw);
+      var stageHover = smoothstep(0.25, 0.50, raw);
+      var stagePress = smoothstep(0.52, 0.84, raw);
+      var stageSettle = smoothstep(0.82, 0.95, raw);
+
+      // Backing peels back/up — rotates and slides out
+      if (backing) {
+        var backRot = lerp(0, -120, stagePeel);
+        var backY = lerp(0, -120, stagePeel);
+        var backX = lerp(0, -180, stagePeel);
+        var backOp = 1 - smoothstep(0.55, 0.78, raw);
+        backing.style.transform = "translate(" + backX.toFixed(0) + "px, " + backY.toFixed(0) + "px) rotate(" + backRot.toFixed(1) + "deg)";
+        backing.style.opacity = backOp.toFixed(3);
+      }
+
+      // Disc rises during hover, descends during press, settles
+      if (disc) {
+        var discY;
+        if (raw < 0.55) {
+          // peel + hover phase: disc lifts from -10 to -90
+          discY = lerp(-10, -90, stageHover);
+        } else {
+          // press phase: descends from -90 down to where the phone is (~140)
+          discY = lerp(-90, 140, stagePress);
+        }
+        var discScale = 1 + Math.sin(raw * Math.PI * 8) * 0.01 * (1 - stagePress); // tiny idle bob during hover
+        var discRot = lerp(0, 360, stageHover) - 360 * stagePress * 0.5;
+        disc.style.transform = "translateY(" + discY.toFixed(0) + "px) scale(" + discScale.toFixed(3) + ") rotate(" + discRot.toFixed(1) + "deg)";
+      }
+
+      // Phone target appears during press
+      if (phone) {
+        phone.style.opacity = smoothstep(0.4, 0.7, raw).toFixed(3);
+      }
+
+      // Stamp ring at landing point
+      if (stamp) {
+        var stampScale = lerp(0.6, 2.4, stageSettle);
+        var stampOp = stageSettle * (1 - smoothstep(0.85, 0.98, raw));
+        stamp.style.transform = "translate(-50%, -50%) scale(" + stampScale.toFixed(2) + ")";
+        stamp.style.opacity = stampOp.toFixed(3);
+      }
+
+      // Step labels fade in / out by stage
+      if (labels[0]) labels[0].classList.toggle("active", raw < 0.3);
+      if (labels[1]) labels[1].classList.toggle("active", raw >= 0.3 && raw < 0.55);
+      if (labels[2]) labels[2].classList.toggle("active", raw >= 0.55);
+
+      raf = null;
+    }
+    window.addEventListener("scroll", function () { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+    update();
+  }
+
+  /* =================================================================
+   * SCENE: WIPE — Before/After EMF wipe with draggable handle
+   * Two side-by-side wave SVGs (one chaotic, one calm). A handle
+   * wipes between them. By default it animates with scroll, but you
+   * can drag it.
+   * ================================================================= */
+  function initSceneWipe() {
+    var sec = document.querySelector("[data-scene-wipe]");
+    if (!sec) return;
+    var handle = sec.querySelector(".wipe-handle");
+    var afterPanel = sec.querySelector(".wipe-after");
+    var labelBefore = sec.querySelector(".wipe-label-before");
+    var labelAfter = sec.querySelector(".wipe-label-after");
+    var stage = sec.querySelector(".wipe-stage");
+    var pathChaos = sec.querySelector(".wave-chaos");
+    var pathCalm = sec.querySelector(".wave-calm");
+    if (!handle || !stage) return;
+    var dragging = false;
+    var manualPos = null; // 0..1, null = scroll-controlled
+    var t0 = performance.now();
+
+    function setWipe(pos) {
+      pos = clamp(pos, 0.05, 0.95);
+      handle.style.left = (pos * 100).toFixed(2) + "%";
+      if (afterPanel) afterPanel.style.clipPath = "inset(0 0 0 " + (pos * 100).toFixed(2) + "%)";
+      // labels fade with proximity to handle
+      if (labelBefore) labelBefore.style.opacity = smoothstep(0.15, 0.35, pos).toFixed(3);
+      if (labelAfter) labelAfter.style.opacity = smoothstep(0.85, 0.65, pos).toFixed(3);
+    }
+
+    function buildWave(scale, baseY, t, jagged) {
+      var W = 560, segs = 100;
+      var d = "M 0 " + baseY.toFixed(1) + " ";
+      for (var i = 0; i <= segs; i++) {
+        var x = (i / segs) * W;
+        var y = baseY;
+        if (jagged) {
+          y += Math.sin(i * 0.6 + t * 2) * scale * 18;
+          y += Math.sin(i * 1.7 - t * 3.4) * scale * 12;
+          y += Math.sin(i * 0.23 + t * 1.4) * scale * 8;
+        } else {
+          y += Math.sin(i * 0.18 + t * 1.0) * scale * 10;
+          y += Math.sin(i * 0.06 - t * 0.6) * scale * 6;
+        }
+        d += "L " + x.toFixed(1) + " " + y.toFixed(1) + " ";
+      }
+      return d;
+    }
+
+    function onPointerDown(e) {
+      dragging = true;
+      stage.classList.add("is-dragging");
+      onPointerMove(e);
+      e.preventDefault();
+    }
+    function onPointerMove(e) {
+      if (!dragging) return;
+      var rect = stage.getBoundingClientRect();
+      var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      manualPos = (clientX - rect.left) / rect.width;
+      setWipe(manualPos);
+    }
+    function onPointerUp() { dragging = false; stage.classList.remove("is-dragging"); }
+    handle.addEventListener("mousedown", onPointerDown);
+    handle.addEventListener("touchstart", onPointerDown, { passive: false });
+    window.addEventListener("mousemove", onPointerMove);
+    window.addEventListener("touchmove", onPointerMove, { passive: false });
+    window.addEventListener("mouseup", onPointerUp);
+    window.addEventListener("touchend", onPointerUp);
+
+    // scroll-driven wipe when not dragging
+    function tick() {
+      requestAnimationFrame(tick);
+      if (!inView(sec)) return;
+      var t = (performance.now() - t0) / 1000;
+      // Render the waves continuously
+      if (pathChaos) pathChaos.setAttribute("d", buildWave(1.0, 130, t, true));
+      if (pathCalm) pathCalm.setAttribute("d", buildWave(0.4, 130, t, false));
+      // If user hasn't dragged yet, wipe with scroll
+      if (manualPos === null) {
+        var raw = blockProgress(sec);
+        var p = holdProgress(raw, 0.3, 0.78);
+        setWipe(0.05 + p * 0.85);
+      }
+    }
+    tick();
+  }
+
+  /* =================================================================
+   * SCENE: LAYERS — exploded view of disc construction
+   * 5 layers stacked vertically, scroll explodes them apart, labels
+   * fade in. Then they recombine.
+   * ================================================================= */
+  function initSceneLayers() {
+    var sec = document.querySelector("[data-scene-layers]");
+    if (!sec) return;
+    var layers = sec.querySelectorAll(".layer");
+    if (!layers.length) return;
+    var raf = null;
+    function update() {
+      if (!inView(sec)) { raf = null; return; }
+      var raw = blockProgress(sec);
+      // 0-0.5: explode out, 0.5-0.85: hold apart with labels, 0.85-1: recombine
+      var explode = holdAndExitProgress(raw, 0.35, 0.8);
+      layers.forEach(function (layer, i) {
+        var n = layers.length;
+        var center = (n - 1) / 2;
+        var offsetIdx = i - center; // -2, -1, 0, 1, 2 for 5 layers
+        var spread = parseFloat(layer.getAttribute("data-spread") || "60");
+        var y = offsetIdx * spread * explode;
+        var rot = offsetIdx * 1.5 * explode;
+        layer.style.transform = "translateY(" + y.toFixed(1) + "px) rotateX(" + (50 + 10 * (1 - explode)) + "deg) rotate(" + rot.toFixed(2) + "deg)";
+        var label = layer.querySelector(".layer-label");
+        if (label) label.style.opacity = smoothstep(0.45, 0.7, raw) * (1 - smoothstep(0.85, 0.95, raw));
+      });
+      raf = null;
+    }
+    window.addEventListener("scroll", function () { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+    update();
+  }
+
+  /* =================================================================
+   * SCENE: RIPPLE — touch/click to send a ripple through a field
+   * ================================================================= */
+  function initSceneRipple() {
+    var sec = document.querySelector("[data-scene-ripple]");
+    if (!sec) return;
+    var stage = sec.querySelector(".ripple-stage");
+    if (!stage) return;
+    var canvas = sec.querySelector(".ripple-canvas");
+    var counter = sec.querySelector(".ripple-counter");
+    if (!canvas) return;
+    var ctx = canvas.getContext("2d");
+    var dpr = Math.min(window.devicePixelRatio, DPR_CAP);
+    var W = 0, H = 0;
+    function resize() {
+      var rect = canvas.getBoundingClientRect();
+      W = rect.width; H = rect.height;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    // Particle field of small dots
+    var DOTS = isMobile ? 60 : 120;
+    var dots = [];
+    for (var i = 0; i < DOTS; i++) {
+      dots.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        baseY: 0,
+        baseX: 0,
+        seed: Math.random() * 100
+      });
+    }
+    function rebuildDots() {
+      for (var i = 0; i < dots.length; i++) {
+        dots[i].x = Math.random() * W;
+        dots[i].y = Math.random() * H;
+        dots[i].baseX = dots[i].x;
+        dots[i].baseY = dots[i].y;
+      }
+    }
+    rebuildDots();
+
+    var ripples = []; // { x, y, t0, intensity }
+    var rippleCount = 0;
+    var lastAuto = 0;
+
+    function ping(x, y, intensity) {
+      ripples.push({ x: x, y: y, t0: performance.now() / 1000, intensity: intensity || 1 });
+      rippleCount++;
+      if (counter) counter.textContent = rippleCount + (rippleCount === 1 ? " ripple" : " ripples");
+    }
+
+    stage.addEventListener("click", function (e) {
+      var rect = stage.getBoundingClientRect();
+      ping(e.clientX - rect.left, e.clientY - rect.top, 1);
+    });
+    stage.addEventListener("touchstart", function (e) {
+      var rect = stage.getBoundingClientRect();
+      var t = e.touches[0];
+      ping(t.clientX - rect.left, t.clientY - rect.top, 1);
+    }, { passive: true });
+
+    function tick() {
+      requestAnimationFrame(tick);
+      if (!inView(sec)) return;
+      var now = performance.now() / 1000;
+      // Auto-ping every 3s if user hasn't interacted
+      if (rippleCount === 0 && now - lastAuto > 3 && inView(sec, 100)) {
+        ping(W / 2 + (Math.random() - 0.5) * 80, H / 2 + (Math.random() - 0.5) * 60, 0.8);
+        rippleCount = 0; // don't count auto-pings against user count
+        if (counter) counter.textContent = "Tap anywhere";
+        lastAuto = now;
+      }
+      // Cull old ripples
+      ripples = ripples.filter(function (r) { return now - r.t0 < 3.5; });
+      // Clear & draw
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = "rgba(212, 166, 74, 0.7)";
+      for (var i = 0; i < dots.length; i++) {
+        var d = dots[i];
+        var dx = 0, dy = 0;
+        for (var j = 0; j < ripples.length; j++) {
+          var r = ripples[j];
+          var age = now - r.t0;
+          var ringR = age * 320; // pixels per second
+          var distFromCenter = Math.sqrt((d.baseX - r.x) * (d.baseX - r.x) + (d.baseY - r.y) * (d.baseY - r.y));
+          var bandWidth = 80;
+          var bandDist = Math.abs(distFromCenter - ringR);
+          if (bandDist < bandWidth) {
+            var amt = (1 - bandDist / bandWidth) * Math.exp(-age * 0.8) * r.intensity * 24;
+            var ang = Math.atan2(d.baseY - r.y, d.baseX - r.x);
+            dx += Math.cos(ang) * amt;
+            dy += Math.sin(ang) * amt;
+          }
+        }
+        var idleX = Math.sin(now * 0.5 + d.seed) * 1.5;
+        var idleY = Math.cos(now * 0.4 + d.seed) * 1.5;
+        var x = d.baseX + dx + idleX;
+        var y = d.baseY + dy + idleY;
+        var dotR = 2 + Math.sqrt(dx * dx + dy * dy) * 0.06;
+        ctx.beginPath();
+        ctx.arc(x, y, dotR, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // Stroke the ripple rings
+      ctx.strokeStyle = "rgba(212, 166, 74, 0.35)";
+      ctx.lineWidth = 1.5;
+      for (var k = 0; k < ripples.length; k++) {
+        var rr = ripples[k];
+        var age2 = now - rr.t0;
+        var rad = age2 * 320;
+        if (rad <= 0) continue;
+        var alpha = (1 - age2 / 3.5) * 0.35;
+        ctx.strokeStyle = "rgba(212, 166, 74, " + alpha.toFixed(3) + ")";
+        ctx.beginPath();
+        ctx.arc(rr.x, rr.y, rad, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+    tick();
+  }
+
 
   /* =================================================================
    * INIT
@@ -834,10 +1181,14 @@
     initMarqueeParallax();
     initStickerParallax();
 
+    initScenePeel();
     initSceneThin();
+    initSceneWipe();
+    initSceneLayers();
     initSceneHarmonise();
     initSceneDevices();
     initSceneAlwaysOn();
+    initSceneRipple();
     initSceneStack();
 
     function init3D(attempts) {

@@ -78,6 +78,29 @@
   </div>
 </div>
 
+<!-- ======== SCENE: PEEL & PRESS — application demo ======== -->
+<section class="scene tall" data-scene-peel>
+  <div class="scene-pin">
+    <span class="scene-eyebrow"><span class="pip"></span>Application</span>
+    <h2 class="scene-headline" data-split-text>Peel. Press.<br><em>Done forever.</em></h2>
+    <div class="scene-stage">
+      <div class="peel-stage">
+        <div class="peel-phone"></div>
+        <div class="peel-stamp"></div>
+        <div class="peel-disc-wrap">
+          <div class="peel-backing"></div>
+          <div class="peel-disc"></div>
+        </div>
+      </div>
+    </div>
+    <div class="peel-steps">
+      <span class="peel-step-label active"><b>01</b> Peel</span>
+      <span class="peel-step-label"><b>02</b> Hover</span>
+      <span class="peel-step-label"><b>03</b> Press</span>
+    </div>
+  </div>
+</section>
+
 <!-- ======== SCENE: THIN — disc next to credit card and coin ======== -->
 <section class="scene short" data-scene-thin>
   <div class="scene-pin">
@@ -109,6 +132,38 @@
   </div>
 </section>
 
+<!-- ======== SCENE: LAYERS — exploded construction ======== -->
+<section class="scene tall" data-scene-layers>
+  <div class="scene-pin">
+    <span class="scene-eyebrow"><span class="pip"></span>Construction</span>
+    <h2 class="scene-headline" data-split-text>Built like<br><em>jewellery.</em></h2>
+    <div class="scene-stage">
+      <div class="layers-stage">
+        <div class="layer" data-spread="80">
+          <div class="layer-disc layer-rim"></div>
+          <span class="layer-label"><b>01</b> Aerospace gold rim</span>
+        </div>
+        <div class="layer" data-spread="80">
+          <div class="layer-disc layer-holo"></div>
+          <span class="layer-label"><b>02</b> Holographic film</span>
+        </div>
+        <div class="layer" data-spread="80">
+          <div class="layer-disc layer-core"></div>
+          <span class="layer-label"><b>03</b> Nano-ion silicone core</span>
+        </div>
+        <div class="layer" data-spread="80">
+          <div class="layer-disc layer-base"></div>
+          <span class="layer-label"><b>04</b> Pattern-etched base</span>
+        </div>
+        <div class="layer" data-spread="80">
+          <div class="layer-disc layer-glue"></div>
+          <span class="layer-label"><b>05</b> 3M aerospace adhesive</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ======== MARQUEE 2 (gold) ======== -->
 <div class="marquee gold-marquee" data-marquee-scroll aria-hidden="true">
   <div class="marquee-track">
@@ -130,6 +185,47 @@
       <div class="emf-stage">
         <div class="emf-state-label">CHAOS</div>
         <div data-pw-canvas style="width:100%;height:100%"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== SCENE: WIPE — Before/After EMF, draggable ======== -->
+<section class="scene short" data-scene-wipe>
+  <div class="scene-pin">
+    <span class="scene-eyebrow"><span class="pip"></span>Before · After</span>
+    <h2 class="scene-headline" data-split-text>Drag to<br><em>see the difference.</em></h2>
+    <div class="scene-stage">
+      <div class="wipe-stage">
+        <svg class="wipe-svg wipe-before" viewBox="0 0 560 280" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="grad-chaos" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#ff7a52" stop-opacity="0.9"/>
+              <stop offset="1" stop-color="#ff3b1f" stop-opacity="0.4"/>
+            </linearGradient>
+          </defs>
+          <path class="wave-chaos" d="" fill="none" stroke="url(#grad-chaos)" stroke-width="2.5"/>
+        </svg>
+        <div class="wipe-after">
+          <svg class="wipe-svg" viewBox="0 0 560 280" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="grad-calm" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#7ad6ff" stop-opacity="0.9"/>
+                <stop offset="1" stop-color="#d4a64a" stop-opacity="0.6"/>
+              </linearGradient>
+            </defs>
+            <path class="wave-calm" d="" fill="none" stroke="url(#grad-calm)" stroke-width="2.5"/>
+          </svg>
+        </div>
+        <div class="wipe-handle">
+          <div class="wipe-handle-line"></div>
+          <div class="wipe-handle-grip">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+        <div class="wipe-label wipe-label-before">CHAOS</div>
+        <div class="wipe-label wipe-label-after">CALM</div>
       </div>
     </div>
   </div>
@@ -205,6 +301,21 @@
           <div class="small">always on</div>
         </div>
         <div class="alwayson-dot"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== SCENE: RIPPLE — interactive tap demo ======== -->
+<section class="scene" data-scene-ripple>
+  <div class="scene-pin">
+    <span class="scene-eyebrow"><span class="pip"></span>Active field</span>
+    <h2 class="scene-headline" data-split-text>Tap anywhere<br><em>to feel it.</em></h2>
+    <div class="scene-stage">
+      <div class="ripple-stage">
+        <canvas class="ripple-canvas"></canvas>
+        <div class="ripple-counter">Tap anywhere</div>
+        <div class="ripple-disc"></div>
       </div>
     </div>
   </div>

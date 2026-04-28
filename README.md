@@ -1,69 +1,62 @@
-# PureWave — v6
+# PureWave — v7
 
-Full redesign in the style of [oryzo.ai](https://oryzo.ai). Every section is a small interactive demo or visual moment, not a wall of copy. The page reads as a series of toys you scroll through.
+Page got longer, animations got slower, four new demo scenes added. Total page is now ~35,500px tall, roughly 2× v6.
 
-## Philosophy change
+## What changed since v6
 
-Previous versions explained the product. v6 *demonstrates* it.
+### Slower scroll-driven animations
+- All scene heights extended by ~50% so the demos breathe:
+  - `.scene` 220vh → 340vh (mobile 200vh → 300vh)
+  - `.scene.tall` 280vh → 420vh (mobile 240vh → 380vh)
+  - `.scene.short` 180vh → 260vh (mobile 160vh → 240vh)
+- New `holdProgress()` / `holdAndExitProgress()` helpers — instead of mapping scroll 0→1 linearly, demos now ramp up quickly, **hold at peak in the middle**, then either stay there or wind down. Applied to thin, harmonise, EMF, and stack. Even on a fast scroll the user gets a clear moment with the demo at its peak state.
 
-| Property | v5 — explained | v6 — demonstrated |
-|----------|---------------|-------------------|
-| 1.2mm thin | "Aerospace-grade, ultra-slim" | Disc edge-on next to a credit card and a coin, animated |
-| Holographic | "Premium gold finish" | Drag-rotate 3D disc, shimmer responds to angle |
-| Universal | "Works on phone, laptop, tablet…" | A glowing disc orbits a 3×2 grid of devices, lighting each up |
-| 24/7 | "No batteries, no charging" | A 24h dial with a pulsing dot circling it |
-| Field harmonisation | "98% measured in lab testing" | Wavy distorted circle morphing to a perfect circle |
-| EMF chaos→calm | "Transforms chaotic signal" | Shader-driven wave field, jagged red→smooth blue |
-| Three packs | A comparison table | Three discs visually stacking on scroll |
-| Stats | A numbers band | Constellation of scattered, slightly-rotated sticker cards |
+### Four new demo scenes
+1. **Peel & Press** — 3-stage application: striped backing peels off, disc hovers, descends onto a phone outline. Headline: "Peel. Press. Done forever."
+2. **Built like jewellery** — exploded view of the disc's 5 construction layers (aerospace gold rim, holographic film, nano-ion silicone core, pattern-etched base, 3M aerospace adhesive), with mono-type labels.
+3. **Drag to see the difference** — before/after EMF wipe with a draggable handle. Chaotic red wave on the left, calm blue/gold wave on the right. Auto-wipes with scroll, but draggable.
+4. **Tap anywhere to feel it** — interactive ripple field. Tap or click anywhere; ripples emanate from that point and a field of golden dots gets pushed outward. Counter tracks taps.
 
-## What's in the page
+### Page now reads as 12 scroll-pinned demos
+1. Hero — drag-rotate disc
+2. **NEW Peel & Press**
+3. Thinner than a credit card — scale comparison (now holds at peak)
+4. Holographic — drag-rotate
+5. **NEW Built like jewellery — exploded layers**
+6. From chaos to calm — EMF shader (now holds at calm)
+7. **NEW Drag to see the difference — before/after wipe**
+8. 100% more harmonised — wavy circle morphs (now holds at perfect)
+9. Works on everything — disc orbits device grid
+10. No batteries, no charging — 24h dial
+11. **NEW Tap anywhere to feel it — ripple field**
+12. Pick your stack — three discs stacking (now holds at full stack)
 
-1. **Hero** — "Quietly brilliant." + draggable 3D disc + scroll-cue pill
-2. **Marquee 1** — "Apply once. Last forever." gold ✦ marquee
-3. **Thin demo** — Scroll-driven scale comparison
-4. **Holographic demo** — Drag-rotate disc with shader shimmer
-5. **Marquee 2 (gold)** — "One disc. Every device."
-6. **EMF scene** — Dark theme, chaos→calm shader transition
-7. **Harmonise scene** — SVG circle morphs from jagged to perfect
-8. **Devices scene** — Disc orbits a 3×2 grid, each card lights up
-9. **Always-on** — 24h dial with orbiting glowing dot
-10. **Sticker grid** — 7 scattered stat cards, mixed dark/gold/cream
-11. **Marquee 3** — "Pick your stack."
-12. **Stack scene** — Three discs visually stack
-13. **Offer card** — Bundle picker, countdown, payment badges
-14. **Reviews** — Visual sticker cards (cream/gold/dark), short italic quotes
-15. **FAQ** — Accordion, 6 items
-16. **Final CTA** — "Stop overthinking." + gold CTA
+Plus marquees, sticker grid, offer card, reviews, FAQ, final CTA.
 
 ## Mobile
 
-Verified screenshots at 390px viewport. Every demo runs:
-- Hero disc renders at full quality
-- Devices grid converts to 2×3
-- Always-on dial scales down preserving ticks
-- Sticker grid uses 2 columns; numbers clamp to viewport width to prevent overflow
-- DPR capped at 1.5x to save battery
+All four new scenes verified at 390px viewport. Layer labels stack below each layer on narrow widths instead of beside; ripple uses fewer particles for performance. No JS errors.
 
 ## Stack
 
-- Static HTML / CSS / JS — no build step
-- Three.js r128 (CDN) for hero, holo, EMF scenes
-- Custom GLSL shaders for the holographic disc, EMF wave field
-- SVG / CSS for thin, harmonise, devices, always-on, stack scenes
+- Static HTML / CSS / JS, no build step
+- Three.js r128 (CDN) for hero, holo, EMF
+- Custom GLSL shaders for the disc and EMF wave field
+- HTML5 Canvas for the ripple field
+- SVG for harmonise, wipe waves, device icons
+- CSS-only for peel, layers exploded view, thin comparison, always-on dial, sticker grid, stack
 - Fraunces (display) + Inter Tight (body) + IBM Plex Mono (labels)
-- Deploys to Vercel as-is
 
 ## Deploying — replace your existing repo
 
 ```bash
-cd ~/Downloads/purewave-static-v6
+cd ~/Downloads/purewave-static-v7
 git init
 git remote add origin https://github.com/aryonramos/purewave-web.git
 git fetch
 git reset --soft origin/main
 git add .
-git commit -m "v6 — demo-driven redesign"
+git commit -m "v7 — longer page, slower scroll, four new demo scenes"
 git push -f origin main
 ```
 
@@ -72,7 +65,7 @@ Vercel auto-redeploys in ~30 seconds.
 ## Local preview
 
 ```bash
-cd purewave-static-v6
+cd purewave-static-v7
 python3 -m http.server 8000
 # open http://localhost:8000
 ```
