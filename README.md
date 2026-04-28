@@ -1,80 +1,56 @@
-# PureWave — Static Site (Version 2)
+# PureWave — v3
 
-This is the static-site version of your PureWave landing page, ready to deploy via GitHub + Vercel.
+Major redesign focused on:
+- Multiple 3D scroll-driven moments (Oryzo-style sticky pins)
+- Cleaner mobile layout, no overlapping elements
+- Smoother typography and section rhythm
 
-## What's in this folder
+## What's new in v3
 
-```
-purewave-static-v2/
-├── index.html          ← the landing page
-├── vercel.json         ← Vercel config (minimal)
-├── .gitignore
-├── README.md
-└── assets/
-    ├── theme.css       ← all styles
-    ├── theme.js        ← all interactivity (3D, animations, etc.)
-    └── *.png           ← all your product photos
-```
+### Three sticky-pinned 3D feature blocks
+Each scrolls past while the disc rotates / scales / shifts. The keyframes are different per block — feature 0 turns face-on to side, feature 1 does a peel-and-press tilt, feature 2 spins twice while zooming.
 
-## How to deploy
+### Marquee bands
+Italic "Made for devices. Built for life." between sections, plus a gold one near the bottom.
 
-### Option A — GitHub + Vercel (recommended)
+### Top scroll-progress bar
+Thin gold line across the top, fills as you scroll.
 
-1. **Create a new GitHub repo** (e.g. `purewave-site`).
-2. **Initialize this folder as a git repo and push it:**
-   ```bash
-   cd purewave-static-v2
-   git init
-   git add .
-   git commit -m "Initial commit"
-   git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/purewave-site.git
-   git push -u origin main
-   ```
-3. **Go to [vercel.com](https://vercel.com)** and click **Add New → Project**.
-4. **Import your GitHub repo.** Vercel will auto-detect it as a static site.
-5. **Click Deploy.** That's it — your live site will be at `your-project.vercel.app` in about 30 seconds.
+### Bug fixes
+- Removed `data-tilt` from the hero floating badges (was breaking their absolute positioning)
+- Sticky 3D panels mobile layout fully rebuilt — no more `top: 50%` getting stuck on
+- Live notification toast no longer overlaps the sticky cart on mobile (auto-shifts up when both visible)
+- Announcement bar marquee now seamless on mobile
+- Bundle cards no longer fight their hover transforms
 
-### Option B — Vercel CLI direct upload
+## Deploying — replace your existing repo
+
+You already have `aryonramos/purewave-web` on GitHub and Vercel is hooked up to it. To replace v2 with v3, the simplest path is:
 
 ```bash
-npm i -g vercel
-cd purewave-static-v2
-vercel
+cd ~/Downloads/purewave-static-v3
+git init
+git remote add origin https://github.com/aryonramos/purewave-web.git
+git fetch
+git reset --soft origin/main
+git add .
+git commit -m "v3 redesign — multiple 3D scroll moments, mobile fixes"
+git push -f origin main
 ```
 
-Follow the prompts. First deploy gives you a preview URL; run `vercel --prod` to push to production.
+Vercel will auto-redeploy in ~30 seconds. Same URL.
 
-### Option C — Test locally first
+## Local preview
 
 ```bash
-cd purewave-static-v2
+cd purewave-static-v3
 python3 -m http.server 8000
+# open http://localhost:8000
 ```
 
-Then open http://localhost:8000
+## Stack
 
-## What this version includes
-
-1. **3D interactive PureWave disc in the hero** — gold holographic, drag to rotate, auto-spins, follows the cursor. Built with Three.js (loaded from CDN).
-2. **Sticky-scroll product story** — disc stays pinned in the centre while three text panels (Engineered / Applied / Invisible) fade in as you scroll past, with **progress dots indicator** at the bottom.
-3. **3D card tilt with glare** on problem cards, bundles, "How it works" steps, and review cards.
-4. **Magnetic CTAs** — buttons gently follow the cursor.
-5. **Custom gold cursor** (desktop only, hidden on touch).
-6. **Line-by-line headline reveals** on scroll (more headings than V1).
-7. **Animated stat counters** in the reviews section.
-8. **Parallax** on the showcase gallery images.
-
-All effects respect `prefers-reduced-motion` and are auto-disabled on touch devices.
-
-## Differences from V1
-
-- V2 has a **progress-dots indicator** at the bottom of the sticky-scroll section (three dots that fill in as you progress).
-- V1 has a **hero scroll cue** ("Scroll" indicator with animated line) that V2 doesn't.
-- Slightly different copy in the sticky panels.
-
-## Notes
-
-- The "Add to Cart" form action has been changed to a no-op for the static demo (it shows an alert instead of trying to POST to a Shopify endpoint that doesn't exist). When you're ready to wire it up to a real store, change the form back to point at your checkout endpoint.
-- Three.js loads from `cdnjs.cloudflare.com` — no build step required.
-- Total page weight: ~700KB (mostly the product photos).
+- Static HTML / CSS / JS — no build step
+- Three.js r128 (CDN) for the 3D disc
+- Fraunces + Inter Tight from Google Fonts
+- Deploys to Vercel as-is, no config beyond `vercel.json`

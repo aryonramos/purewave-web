@@ -1,69 +1,52 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-    <meta name="theme-color" content="#f6f4ef">
-    <link rel="canonical" href="/">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="theme-color" content="#f6f4ef">
+<title>PureWave — Premium Nano-Ion Disc</title>
+<meta name="description" content="The ultra-thin nano-ion disc that quietly sits on your devices. One decision. Ten seconds. Done forever.">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,400..900;9..144,1,400..900&family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    
+<link rel="stylesheet" href="assets/theme.css">
 
-    <title>PureWave — Premium Nano-Ion Disc</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+<script src="assets/theme.js" defer></script>
+</head>
+<body>
 
-    
+<!-- Top scroll progress bar -->
+<div class="scroll-progress" data-scroll-progress aria-hidden="true"></div>
 
-    <meta property="og:site_name" content="PureWave">
-    <meta property="og:url" content="/">
-    <meta property="og:title" content="PureWave — Premium Nano-Ion Disc">
-    <meta property="og:type" content="website">
-    
-
-    <link rel="stylesheet" href="assets/theme.css">
-
-    <!-- Three.js for the 3D PureWave disc (deferred so it doesn't block render) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
-    <script src="assets/theme.js" defer></script>
-
-    
-  </head>
-  <body class="template-index">
-    <!-- Custom cursor (auto-hidden on touch devices) -->
-    <div class="pw-cursor" data-pw-cursor aria-hidden="true">
-      <div class="pw-cursor-dot"></div>
-      <div class="pw-cursor-ring"></div>
-    </div>
-
-    <main>
-      <!-- ============ ANNOUNCEMENT BAR ============ -->
+<!-- Announcement bar -->
 <div class="announce" aria-live="polite">
   <div class="announce-track">
-    <span><span class="dot"></span> TODAY ONLY &middot; 50% OFF + FREE US SHIPPING</span>
-    <span><span class="dot"></span> 30-DAY MONEY-BACK GUARANTEE &middot; ZERO RISK</span>
+    <span><span class="dot"></span> TODAY ONLY · 50% OFF + FREE US SHIPPING</span>
+    <span><span class="dot"></span> 30-DAY MONEY-BACK GUARANTEE · ZERO RISK</span>
     <span><span class="dot"></span> RATED 4.7 STARS BY VERIFIED BUYERS</span>
     <span><span class="dot"></span> SHIPS WITHIN 48 HOURS</span>
-    <span><span class="dot"></span> TODAY ONLY &middot; 50% OFF + FREE US SHIPPING</span>
-    <span><span class="dot"></span> 30-DAY MONEY-BACK GUARANTEE &middot; ZERO RISK</span>
+    <span><span class="dot"></span> TODAY ONLY · 50% OFF + FREE US SHIPPING</span>
+    <span><span class="dot"></span> 30-DAY MONEY-BACK GUARANTEE · ZERO RISK</span>
     <span><span class="dot"></span> RATED 4.7 STARS BY VERIFIED BUYERS</span>
     <span><span class="dot"></span> SHIPS WITHIN 48 HOURS</span>
   </div>
 </div>
 
-<!-- ============ HEADER ============ -->
+<!-- Header -->
 <header>
   <div class="wrap nav">
-    <a href="/" class="logo" data-magnetic><span class="logo-mark"></span>PureWave</a>
+    <a href="#" class="logo"><span class="logo-mark"></span>PureWave</a>
     <nav class="nav-links">
       <a href="#how">How It Works</a>
       <a href="#reviews">Reviews</a>
       <a href="#compare">Compare</a>
       <a href="#faq">FAQ</a>
     </nav>
-    <a href="#buy" class="nav-cta" data-magnetic>Shop Now &rarr;</a>
+    <a href="#buy" class="nav-cta">Shop Now &rarr;</a>
   </div>
 </header>
 
@@ -80,63 +63,57 @@
       </p>
 
       <div class="hero-rating">
-        <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-        <span class="rating-text">4.7/5 <span>&middot; 3,214 verified reviews</span></span>
+        <span class="stars">★★★★★</span>
+        <span class="rating-text">4.7/5 <span>· 3,214 verified reviews</span></span>
       </div>
 
       <div class="hero-cta-row">
-        <a href="#buy" class="btn-primary" data-magnetic>
-          Yes, I Want PureWave &mdash; 50% Off <span class="arr">&rarr;</span>
+        <a href="#buy" class="btn-primary">
+          Yes, I Want PureWave — 50% Off <span class="arr">&rarr;</span>
         </a>
-        <a href="#how" class="btn-ghost" data-magnetic>Show me how it works</a>
+        <a href="#how" class="btn-ghost">Show me how it works</a>
       </div>
 
       <div class="hero-trust">
         <div class="hero-trust-item">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
           Free US shipping
         </div>
         <div class="hero-trust-item">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
           30-day money-back guarantee
         </div>
         <div class="hero-trust-item">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
           Works on any device
         </div>
       </div>
     </div>
 
-    <!-- ============ 3D INTERACTIVE HERO STAGE ============ -->
+    <!-- 3D HERO STAGE -->
     <div class="hero-visual">
       <div class="hero-3d-stage" data-pw-3d-hero>
-        <!-- Three.js renderer mounts here -->
         <div class="hero-3d-canvas" data-pw-canvas></div>
-        <!-- Image fallback (shown until 3D loads, hidden if WebGL fails) -->
         <img src="assets/phone-floating.png" alt="PureWave nano-ion disc on iPhone" class="hero-3d-fallback">
-        <!-- Decorative orbital ring with traveling dot -->
-        <div class="hero-3d-orbit" aria-hidden="true">
-          <span class="orbit-dot"></span>
-        </div>
-        <!-- Drag-to-rotate hint -->
+        <div class="hero-3d-orbit" aria-hidden="true"><span class="orbit-dot"></span></div>
         <div class="hero-3d-hint" aria-hidden="true">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9V5a3 3 0 0 1 6 0v4"/><path d="M5 9h14l-1 11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 9z"/></svg>
           <span>Drag to rotate</span>
         </div>
       </div>
 
-      <div class="hero-badge hero-badge-1" data-tilt>
+      <div class="hero-badge hero-badge-1">
         <div class="ico">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <div>
           Nano-Ion Technology
           <small>Passive. Silent. Always on.</small>
         </div>
       </div>
-      <div class="hero-badge hero-badge-2" data-tilt>
+      <div class="hero-badge hero-badge-2">
         <div class="ico">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
         <div>
           Applied in 10 seconds
@@ -147,7 +124,19 @@
   </div>
 </section>
 
-<!-- ============ SOCIAL PROOF STRIP ============ -->
+<!-- ============ MARQUEE BAND #1 ============ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Made for devices.</span>
+    <span>Built for life.</span>
+    <span>Made for devices.</span>
+    <span>Built for life.</span>
+    <span>Made for devices.</span>
+    <span>Built for life.</span>
+  </div>
+</div>
+
+<!-- ============ LOCATIONS / SOCIAL PROOF ============ -->
 <section class="logos">
   <div class="wrap logos-inner">
     <span class="logos-label">Trusted across</span>
@@ -165,7 +154,7 @@
 </section>
 
 <!-- ============ AWARENESS ============ -->
-<section class="section problem">
+<section class="section">
   <div class="wrap">
     <div class="section-head">
       <span class="section-eyebrow">The Question Everyone's Starting to Ask</span>
@@ -173,79 +162,128 @@
         Your phone never leaves your side.<br><em>When did you last think about that?</em>
       </h2>
       <p class="section-sub">
-        The average American spends over 7 hours a day with a device in hand, in their pocket, or on their lap. Most people don't give it a second thought &mdash; until they do. Once you do, you can't un-think it.
+        The average American spends over 7 hours a day with a device in hand, in their pocket, or on their lap. Most people don't give it a second thought — until they do. Once you do, you can't un-think it.
       </p>
     </div>
     <div class="problem-grid">
-      <div class="problem-card" data-tilt>
+      <div class="problem-card">
         <div class="problem-num">01</div>
         <h3>It's on you all day. Every day.</h3>
-        <p>Pocket at 7am. Desk at 9am. Lap at noon. Nightstand at 11pm. Your devices are your constant companions &mdash; and for a growing number of people, that's something worth being thoughtful about.</p>
+        <p>Pocket at 7am. Desk at 9am. Lap at noon. Nightstand at 11pm. Your devices are your constant companions — and for a growing number of people, that's something worth being thoughtful about.</p>
       </div>
-      <div class="problem-card" data-tilt>
+      <div class="problem-card">
         <div class="problem-num">02</div>
         <h3>The conversation is only getting louder.</h3>
         <p>5G. Smart homes. Wearables. Remote work. The technology around us has compounded faster than most of us have had time to process. That's why more people than ever are looking for simple, tangible ways to feel more in control.</p>
       </div>
-      <div class="problem-card" data-tilt>
+      <div class="problem-card">
         <div class="problem-num">03</div>
-        <h3>Doing something about it costs less than a dinner out.</h3>
-        <p>Most people who discover PureWave wish they'd found it sooner. At under $10 per disc in a starter pack, it's one of the easiest decisions you'll make this year &mdash; with a full money-back guarantee if you feel otherwise.</p>
+        <h3>Costs less than a dinner out.</h3>
+        <p>Most people who discover PureWave wish they'd found it sooner. At under $10 per disc in a starter pack, it's one of the easiest decisions you'll make this year — with a full money-back guarantee if you feel otherwise.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ STICKY 3D SCROLL STORY ============ -->
-<!-- The disc stays pinned in the center of viewport while three text panels fade in/out as user scrolls. Inspired by Oryzo. -->
-<section class="sticky-3d" data-pw-sticky3d>
-  <div class="sticky-3d-pin">
-    <!-- Three.js canvas pinned to viewport -->
-    <div class="sticky-3d-canvas" data-pw-sticky-canvas></div>
-
-    <!-- Scrolling text panels -->
-    <div class="sticky-3d-panels">
-      <div class="sticky-3d-panel" data-panel="0">
-        <span class="sticky-3d-eyebrow">01 &mdash; Engineered</span>
-        <h2 class="sticky-3d-title">Premium nano-anion <em>silicone disc.</em></h2>
-        <p>Holographic finish. Aerospace-grade adhesive. 1.1 inches across. 1.2mm thin. Built to disappear into the back of any device you own.</p>
+<!-- ============ FEATURE BLOCK 1 — Engineered ============ -->
+<section class="feature-block" data-pw-feature="0">
+  <div class="feature-pin">
+    <div class="feature-3d" data-pw-feature-canvas></div>
+    <div class="feature-text">
+      <span class="feature-text-eyebrow">01 — Engineered</span>
+      <h2 class="feature-text-title" data-split-text>
+        Premium nano-anion<br><em>silicone disc.</em>
+      </h2>
+      <p class="feature-text-sub">
+        Holographic finish. Aerospace-grade adhesive. 1.1 inches across. 1.2mm thin. Built to disappear into the back of any device you own.
+      </p>
+      <div class="feature-stat" data-bar-fill="92%">
+        <div>
+          <div class="feature-stat-num"><span data-counter="1.2" data-suffix="mm" data-decimals="1">1.2mm</span></div>
+          <div class="feature-stat-label">Thinner than a credit card. Sits perfectly flush.</div>
+        </div>
+        <div style="flex:1; min-width: 140px;">
+          <div class="feature-bar"><div class="feature-bar-fill"></div></div>
+          <div style="font-size:11px; color:var(--muted); margin-top:6px; letter-spacing:0.05em; text-transform:uppercase; font-weight:600;">Profile / Flush rating</div>
+        </div>
       </div>
-
-      <div class="sticky-3d-panel" data-panel="1">
-        <span class="sticky-3d-eyebrow">02 &mdash; Applied</span>
-        <h2 class="sticky-3d-title">Peel. Press. <em>Forget.</em></h2>
-        <p>No batteries. No charging. No app. No setup. Apply once and PureWave does its work silently in the background &mdash; for the entire life of your device.</p>
-      </div>
-
-      <div class="sticky-3d-panel" data-panel="2">
-        <span class="sticky-3d-eyebrow">03 &mdash; Invisible</span>
-        <h2 class="sticky-3d-title">Sits flat under <em>any case.</em></h2>
-        <p>Zero impact on signal, GPS, NFC, Bluetooth or wireless charging. You'll forget it's there within a day. That's exactly the point.</p>
-      </div>
-    </div>
-
-    <!-- Progress dots indicator -->
-    <div class="sticky-3d-progress" aria-hidden="true">
-      <span class="s3d-dot is-active"></span>
-      <span class="s3d-dot"></span>
-      <span class="s3d-dot"></span>
     </div>
   </div>
 </section>
+
+<!-- ============ FEATURE BLOCK 2 — Applied (alt bg, reverse layout) ============ -->
+<section class="feature-block alt reverse" data-pw-feature="1">
+  <div class="feature-pin">
+    <div class="feature-3d" data-pw-feature-canvas></div>
+    <div class="feature-text">
+      <span class="feature-text-eyebrow">02 — Applied</span>
+      <h2 class="feature-text-title" data-split-text>
+        Peel. Press.<br><em>Forget.</em>
+      </h2>
+      <p class="feature-text-sub">
+        No batteries. No charging. No app. No setup. Apply once and PureWave does its work silently in the background — for the entire life of your device.
+      </p>
+      <div class="feature-stat" data-bar-fill="100%">
+        <div>
+          <div class="feature-stat-num"><span data-counter="10" data-suffix="s">10s</span></div>
+          <div class="feature-stat-label">Total time to apply. Then never again.</div>
+        </div>
+        <div style="flex:1; min-width: 140px;">
+          <div class="feature-bar"><div class="feature-bar-fill"></div></div>
+          <div style="font-size:11px; color:var(--muted); margin-top:6px; letter-spacing:0.05em; text-transform:uppercase; font-weight:600;">Setup simplicity</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURE BLOCK 3 — Invisible (DARK theme) ============ -->
+<section class="feature-block dark" data-pw-feature="2">
+  <div class="feature-pin">
+    <div class="feature-3d" data-pw-feature-canvas></div>
+    <div class="feature-text">
+      <span class="feature-text-eyebrow">03 — Invisible</span>
+      <h2 class="feature-text-title" data-split-text>
+        Sits flat under<br><em>any case.</em>
+      </h2>
+      <p class="feature-text-sub">
+        Zero impact on signal, GPS, NFC, Bluetooth or wireless charging. You'll forget it's there within a day. That's exactly the point.
+      </p>
+      <div class="feature-stat" data-bar-fill="0%">
+        <div>
+          <div class="feature-stat-num"><span data-counter="0" data-suffix="%">0%</span></div>
+          <div class="feature-stat-label">Signal interference. Performance impact. Things to maintain.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE BAND #2 (gold) ============ -->
+<div class="marquee gold-marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Apply once.</span>
+    <span>Last forever.</span>
+    <span>Apply once.</span>
+    <span>Last forever.</span>
+    <span>Apply once.</span>
+    <span>Last forever.</span>
+  </div>
+</div>
 
 <!-- ============ SOLUTION ============ -->
 <section class="section">
   <div class="wrap solution-split">
     <div class="solution-img" data-parallax-image>
-      <img src="assets/phone-closeup.png" alt="PureWave nano-ion disc sitting discreetly on the back of an iPhone">
+      <img src="assets/phone-closeup.png" alt="PureWave disc applied to back of iPhone">
     </div>
     <div>
       <span class="section-eyebrow">Meet PureWave</span>
       <h2 class="section-title" data-split-text>
-        Smaller than a coin.<br>Thinner than a credit card.<br><em>On your device in 10 seconds.</em>
+        Smaller than a coin.<br>Thinner than a card.<br><em>On your device in 10 seconds.</em>
       </h2>
       <p class="section-sub">
-        PureWave is a premium nano-anion silicone disc engineered to sit invisibly on any device you use daily. Ultra-thin. Holographic finish. Zero effect on signal, charging or performance. Apply once &mdash; it's there for life.
+        PureWave is a premium nano-anion silicone disc engineered to sit invisibly on any device you use daily. Ultra-thin. Holographic finish. Zero effect on signal, charging or performance.
       </p>
 
       <ul class="solution-features">
@@ -254,17 +292,17 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
           </div>
           <div class="sf-text">
-            <h4>Ultra-thin 1.1" (28mm) &mdash; invisible on any device</h4>
-            <p>Sits completely flat. Doesn't lift cases, interfere with wireless charging, or mess with signal or GPS. You'll forget it's there. That's the point.</p>
+            <h4>Ultra-thin 1.1" — invisible on any device</h4>
+            <p>Sits completely flat. Doesn't lift cases or interfere with wireless charging. You'll forget it's there.</p>
           </div>
         </li>
         <li>
           <div class="sf-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h12"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
           </div>
           <div class="sf-text">
             <h4>One disc fits every device you own</h4>
-            <p>iPhone. Android. iPad. MacBook. Windows laptop. Router. Smartwatch. Anywhere you want one, it goes. One disc per device. Simple math.</p>
+            <p>iPhone. Android. iPad. MacBook. Router. Smartwatch. One per device. Simple math.</p>
           </div>
         </li>
         <li>
@@ -272,8 +310,8 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           </div>
           <div class="sf-text">
-            <h4>Ten seconds to apply. Zero upkeep. Forever.</h4>
-            <p>Peel. Press. Hold 30 seconds. That's your entire relationship with the setup process. No apps, no charging, no subscriptions. It just sits there, doing its thing.</p>
+            <h4>Ten seconds. Zero upkeep. Forever.</h4>
+            <p>Peel. Press. Hold 30 seconds. Done. No apps, no charging, no subscriptions.</p>
           </div>
         </li>
         <li>
@@ -281,8 +319,8 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
           <div class="sf-text">
-            <h4>Silent. Passive. 24/7. For the life of the device.</h4>
-            <p>While you're working, scrolling, or sleeping &mdash; PureWave is quietly on your device. No thinking required from you. Ever again.</p>
+            <h4>Silent. Passive. 24/7. For life.</h4>
+            <p>Working, scrolling, sleeping — PureWave is quietly on your device. No thinking required.</p>
           </div>
         </li>
       </ul>
@@ -295,8 +333,8 @@
   <div class="wrap">
     <div class="showcase-grid">
       <div class="showcase-item sc-big" data-parallax-image><img src="assets/phone-floating.png" alt="PureWave on floating phone"></div>
-      <div class="showcase-item" data-parallax-image><img src="assets/lifestyle-tray.png" alt="PureWave gold and silver variants"></div>
-      <div class="showcase-item" data-parallax-image><img src="assets/lifestyle-linen.png" alt="PureWave lifestyle shot on linen"></div>
+      <div class="showcase-item" data-parallax-image><img src="assets/lifestyle-tray.png" alt="PureWave gold and silver"></div>
+      <div class="showcase-item" data-parallax-image><img src="assets/lifestyle-linen.png" alt="PureWave on linen"></div>
       <div class="showcase-item" data-parallax-image><img src="assets/lifestyle-light.png" alt="PureWave in natural light"></div>
       <div class="showcase-item" data-parallax-image><img src="assets/lifestyle-phone-silver.png" alt="PureWave silver on phone"></div>
     </div>
@@ -304,7 +342,7 @@
 </section>
 
 <!-- ============ HOW IT WORKS ============ -->
-<section class="section how" id="how">
+<section class="section" id="how">
   <div class="wrap">
     <div class="section-head">
       <span class="section-eyebrow">How It Works</span>
@@ -315,29 +353,29 @@
     </div>
 
     <div class="how-grid">
-      <div class="how-step" data-tilt>
-        <div class="how-step-num">01</div>
+      <div class="how-step">
+        <div class="how-step-num">STEP 01</div>
         <div class="how-icon">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </div>
         <h3>Peel</h3>
         <p>Remove the adhesive backing. That's it. You're already halfway done.</p>
       </div>
-      <div class="how-step" data-tilt>
-        <div class="how-step-num">02</div>
+      <div class="how-step">
+        <div class="how-step-num">STEP 02</div>
         <div class="how-icon">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
         </div>
         <h3>Press</h3>
-        <p>Stick it to the back of your phone, laptop, tablet &mdash; wherever you want it. Press and hold 30 seconds. Done.</p>
+        <p>Stick to the back of your device. Press and hold 30 seconds. Done.</p>
       </div>
-      <div class="how-step" data-tilt>
-        <div class="how-step-num">03</div>
+      <div class="how-step">
+        <div class="how-step-num">STEP 03</div>
         <div class="how-icon">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <h3>Forget about it</h3>
-        <p>Seriously. No maintenance, no charging, no apps to check. PureWave is permanently placed and silently doing its thing. Move on with your day.</p>
+        <p>No maintenance, no charging, no apps. PureWave is permanently placed and silently doing its thing.</p>
       </div>
     </div>
   </div>
@@ -349,65 +387,64 @@
     <div class="section-head">
       <span class="section-eyebrow">Today's Offer</span>
       <h2 class="section-title" data-split-text>
-        Cover every device in your home<br><em>for less than a restaurant meal.</em>
+        Cover every device<br><em>for less than a meal out.</em>
       </h2>
       <p class="section-sub">
-        The average household has 12+ devices. Most PureWave customers cover all of them in a single order &mdash; phone, laptop, partner's phone, kids' tablets, the router. The household pack is the one most people wish they'd grabbed first.
+        The average household has 12+ devices. Most PureWave customers cover all of them in a single order.
       </p>
     </div>
 
     <div class="countdown-bar" data-countdown>
       <span class="flame">🔥</span>
-      50% off ends in
+      <span>50% off ends in</span>
       <span class="countdown-timer">
-        <span class="countdown-block" data-cd-h>23</span>:
-        <span class="countdown-block" data-cd-m>47</span>:
+        <span class="countdown-block" data-cd-h>23</span><span>:</span>
+        <span class="countdown-block" data-cd-m>47</span><span>:</span>
         <span class="countdown-block" data-cd-s>12</span>
       </span>
-      &middot; Free US shipping on every order
     </div>
 
     <div class="offer-card">
       <div class="offer-grid">
-        <button type="button" class="bundle" data-bundle="1" aria-pressed="false" data-tilt>
-          <div class="bundle-qty">6&times;</div>
+        <button type="button" class="bundle" data-bundle="1" aria-pressed="false">
+          <div class="bundle-qty">6×</div>
           <div class="bundle-label">Starter Pack</div>
           <div class="bundle-price">
             <span class="price-now">$59</span>
             <span class="price-was">$118</span>
           </div>
           <div class="price-unit">$9.83 per disc</div>
-          <div class="bundle-saves">Save 50% today</div>
+          <div class="bundle-saves">Save 50%</div>
         </button>
 
-        <button type="button" class="bundle popular active" data-bundle="2" aria-pressed="true" data-tilt>
-          <div class="bundle-qty">12&times;</div>
+        <button type="button" class="bundle popular active" data-bundle="2" aria-pressed="true">
+          <div class="bundle-qty">12×</div>
           <div class="bundle-label">Household Pack</div>
           <div class="bundle-price">
             <span class="price-now">$89</span>
             <span class="price-was">$178</span>
           </div>
           <div class="price-unit">$7.42 per disc</div>
-          <div class="bundle-saves">Most popular &middot; Free shipping</div>
+          <div class="bundle-saves">Free shipping</div>
         </button>
 
-        <button type="button" class="bundle best-value" data-bundle="3" aria-pressed="false" data-tilt>
-          <div class="bundle-qty">18&times;</div>
+        <button type="button" class="bundle" data-bundle="3" aria-pressed="false">
+          <div class="bundle-qty">18×</div>
           <div class="bundle-label">Family Pack</div>
           <div class="bundle-price">
             <span class="price-now">$119</span>
             <span class="price-was">$238</span>
           </div>
-          <div class="price-unit">$6.61 per disc &mdash; best value</div>
-          <div class="bundle-saves">Lowest price &middot; Free shipping</div>
+          <div class="price-unit">$6.61 per disc — best value</div>
+          <div class="bundle-saves">Lowest price</div>
           <ul class="bundle-bonus">
             <li>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-              Free Digital Placement Guide
+              Free Placement Guide
             </li>
             <li>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-              1-Year Replacement Warranty
+              1-Year Warranty
             </li>
           </ul>
         </button>
@@ -420,14 +457,14 @@
             data-variant-2="47734230319291"
             data-variant-3="47734230352059">
           <input type="hidden" name="quantity" value="1">
-          <button type="submit" class="btn-huge" data-magnetic>
+          <button type="submit" class="btn-huge">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
-            <span data-bundle-cta-text>Add To Cart &middot; $89.00 USD</span>
+            <span data-bundle-cta-text>Add To Cart · $89.00 USD</span>
           </button>
         </form>
-        <p class="cta-sub-nudge">⚡ 96% of customers would buy again &mdash; or their money back.</p>
+        <p class="cta-sub-nudge">⚡ 96% of customers would buy again — or your money back.</p>
         <div class="offer-payment">
           <span>Secure checkout with</span>
           <div class="offer-payment-logos">
@@ -442,26 +479,26 @@
 
       <div class="offer-guarantees">
         <div class="og-item">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
           30-Day Money<br>Back Guarantee
         </div>
         <div class="og-item">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
           Free Shipping<br>United States
         </div>
         <div class="og-item">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          Secure SSL<br>Encrypted Checkout
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          SSL Encrypted<br>Checkout
         </div>
         <div class="og-item">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           Ships Within<br>48 Hours
         </div>
       </div>
     </div>
 
     <p class="offer-disclaimer">
-      PureWave is a lifestyle wellness accessory. Individual experiences vary. These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease or medical condition. Promotional pricing reflects a discount from our standard retail price.
+      PureWave is a lifestyle wellness accessory. Individual experiences vary. These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease or medical condition.
     </p>
   </div>
 </section>
@@ -477,37 +514,37 @@
       <div class="compare-row head">
         <span>Feature</span>
         <span class="cell comp-ours">PureWave</span>
-        <span class="cell">Generic Stickers</span>
+        <span class="cell">Generic</span>
       </div>
       <div class="compare-row">
-        <span class="cell-label">Nano-anion silicone technology</span>
-        <span class="cell comp-ours"><span class="check">&check;</span></span>
-        <span class="cell"><span class="cross">&times;</span></span>
+        <span class="cell-label">Nano-anion silicone tech</span>
+        <span class="cell comp-ours"><span class="check">✓</span></span>
+        <span class="cell"><span class="cross">×</span></span>
       </div>
       <div class="compare-row">
         <span class="cell-label">Works on all devices</span>
-        <span class="cell comp-ours"><span class="check">&check;</span></span>
+        <span class="cell comp-ours"><span class="check">✓</span></span>
         <span class="cell comp-theirs">Limited</span>
       </div>
       <div class="compare-row">
         <span class="cell-label">Premium holographic finish</span>
-        <span class="cell comp-ours"><span class="check">&check;</span></span>
-        <span class="cell"><span class="cross">&times;</span></span>
+        <span class="cell comp-ours"><span class="check">✓</span></span>
+        <span class="cell"><span class="cross">×</span></span>
       </div>
       <div class="compare-row">
-        <span class="cell-label">Zero impact on device performance</span>
-        <span class="cell comp-ours"><span class="check">&check;</span></span>
+        <span class="cell-label">Zero impact on performance</span>
+        <span class="cell comp-ours"><span class="check">✓</span></span>
         <span class="cell comp-theirs">Varies</span>
       </div>
       <div class="compare-row">
         <span class="cell-label">30-day money-back guarantee</span>
-        <span class="cell comp-ours"><span class="check">&check;</span></span>
-        <span class="cell"><span class="cross">&times;</span></span>
+        <span class="cell comp-ours"><span class="check">✓</span></span>
+        <span class="cell"><span class="cross">×</span></span>
       </div>
       <div class="compare-row">
-        <span class="cell-label">47,000+ users</span>
-        <span class="cell comp-ours"><span class="check">&check;</span></span>
-        <span class="cell"><span class="cross">&times;</span></span>
+        <span class="cell-label">47,000+ verified users</span>
+        <span class="cell comp-ours"><span class="check">✓</span></span>
+        <span class="cell"><span class="cross">×</span></span>
       </div>
     </div>
   </div>
@@ -521,12 +558,12 @@
       <h2 class="section-title" data-split-text>
         The reviews speak<br><em>for themselves.</em>
       </h2>
-      <p class="section-sub" style="max-width:540px;margin:10px auto 0;font-size:13px;color:var(--muted);">Individual experiences vary. Reviews reflect each customer's personal account.</p>
+      <p class="section-sub" style="max-width:540px;font-size:13px;color:var(--muted);">Individual experiences vary. Reviews reflect each customer's personal account.</p>
     </div>
 
     <div class="reviews-stats">
       <div class="rs-item">
-        <div class="rs-num">4.7<span style="color: var(--gold); font-size: 28px;">&#9733;</span></div>
+        <div class="rs-num">4.7<span style="color: var(--gold); font-size: 26px;">★</span></div>
         <div class="rs-label">Average rating</div>
       </div>
       <div class="rs-item">
@@ -539,108 +576,108 @@
       </div>
       <div class="rs-item">
         <div class="rs-num" data-counter="47" data-suffix="K+">47K+</div>
-        <div class="rs-label">Discs placed on devices</div>
+        <div class="rs-label">Discs placed</div>
       </div>
     </div>
 
     <div class="reviews-grid">
-      <div class="review" data-tilt>
-        <span class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+      <div class="review">
+        <span class="review-stars">★★★★★</span>
         <h4>"I kept putting it off. I wish I hadn't."</h4>
-        <p>I sat on this for about a month, overthinking it. Finally just ordered the household pack. Applied everything in five minutes flat. The discs look genuinely premium &mdash; like they were designed to be on my devices, not stuck on as an afterthought. No regrets whatsoever.</p>
+        <p>I sat on this for about a month, overthinking it. Finally just ordered the household pack. Applied everything in five minutes flat. The discs look genuinely premium — like they were designed to be on my devices, not stuck on as an afterthought.</p>
         <div class="review-footer">
           <div class="review-avatar">EB</div>
           <div>
             <div class="review-name">Emma B.</div>
-            <div class="review-meta">Austin, TX &middot; 3 weeks ago</div>
+            <div class="review-meta">Austin, TX · 3 weeks ago</div>
           </div>
           <span class="verified">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
             Verified
           </span>
         </div>
       </div>
 
-      <div class="review" data-tilt>
-        <span class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-        <h4>"Got the family pack. Every device in the house is done."</h4>
-        <p>My kids are on iPads all day for school. My wife and I are both remote workers. We had maybe 10 devices between us that needed covering. The family pack handled all of them. Applied everything in one sitting. Took maybe eight minutes. Done. Worth every penny.</p>
+      <div class="review">
+        <span class="review-stars">★★★★★</span>
+        <h4>"Got the family pack. Every device is done."</h4>
+        <p>My kids are on iPads all day for school. My wife and I are both remote workers. We had maybe 10 devices that needed covering. The family pack handled all of them. Took maybe eight minutes. Done.</p>
         <div class="review-footer">
           <div class="review-avatar">DW</div>
           <div>
             <div class="review-name">David W.</div>
-            <div class="review-meta">Nashville, TN &middot; 1 month ago</div>
+            <div class="review-meta">Nashville, TN · 1 month ago</div>
           </div>
           <span class="verified">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
             Verified
           </span>
         </div>
       </div>
 
-      <div class="review" data-tilt>
-        <span class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-        <h4>"Something I did once and never had to think about again."</h4>
-        <p>Remote worker. MacBook on my lap for 8 hours straight most days. I wanted something I could do once and forget. That's exactly what PureWave is. Applied it, moved on. It's been on my laptop ever since. No maintenance, no follow-up required. That alone is worth it.</p>
+      <div class="review">
+        <span class="review-stars">★★★★★</span>
+        <h4>"Did once. Never had to think about it again."</h4>
+        <p>Remote worker. MacBook on my lap for 8 hours straight most days. I wanted something I could do once and forget. That's exactly what PureWave is. Applied it, moved on. No maintenance, no follow-up. That alone is worth it.</p>
         <div class="review-footer">
           <div class="review-avatar">JK</div>
           <div>
             <div class="review-name">James K.</div>
-            <div class="review-meta">Denver, CO &middot; 2 weeks ago</div>
+            <div class="review-meta">Denver, CO · 2 weeks ago</div>
           </div>
           <span class="verified">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
             Verified
           </span>
         </div>
       </div>
 
-      <div class="review" data-tilt>
-        <span class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-        <h4>"Looks like it was made for my iPhone. Not stuck on it."</h4>
-        <p>Genuinely worried this would look cheap on my iPhone 15 Pro. It doesn't. The gold holographic finish is stunning &mdash; multiple people have asked what it is. Fits perfectly under my case, you'd never know it's there. Really glad I pulled the trigger on it.</p>
+      <div class="review">
+        <span class="review-stars">★★★★★</span>
+        <h4>"Looks like it was made for my iPhone."</h4>
+        <p>Genuinely worried this would look cheap on my iPhone 15 Pro. It doesn't. The gold holographic finish is stunning — multiple people have asked what it is. Fits perfectly under my case. Really glad I pulled the trigger.</p>
         <div class="review-footer">
           <div class="review-avatar">SR</div>
           <div>
             <div class="review-name">Sophie R.</div>
-            <div class="review-meta">Portland, OR &middot; 5 days ago</div>
+            <div class="review-meta">Portland, OR · 5 days ago</div>
           </div>
           <span class="verified">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
             Verified
           </span>
         </div>
       </div>
 
-      <div class="review" data-tilt>
-        <span class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-        <h4>"Ordered a second household pack three days after the first."</h4>
-        <p>My wife noticed the discs immediately and asked where I got them. She'd been wanting something like this for a while. We ended up ordering a second household pack for her home office setup within the week. The gold and silver variants look brilliant side by side.</p>
+      <div class="review">
+        <span class="review-stars">★★★★★</span>
+        <h4>"Ordered a second pack three days after the first."</h4>
+        <p>My wife noticed the discs immediately and asked where I got them. We ended up ordering a second household pack for her home office setup within the week. The gold and silver variants look brilliant side by side.</p>
         <div class="review-footer">
           <div class="review-avatar">TM</div>
           <div>
             <div class="review-name">Tom M.</div>
-            <div class="review-meta">San Diego, CA &middot; 3 weeks ago</div>
+            <div class="review-meta">San Diego, CA · 3 weeks ago</div>
           </div>
           <span class="verified">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
             Verified
           </span>
         </div>
       </div>
 
-      <div class="review" data-tilt>
-        <span class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+      <div class="review">
+        <span class="review-stars">★★★★☆</span>
         <h4>"Took about a week, exactly as described."</h4>
-        <p>Shipping took around 6 days to Phoenix which is what they said it would be. Applied one to my phone and one to my work laptop, both went on no problem. Can't really tell it's there which is what I wanted. Not giving five stars yet just because I've only had it a couple weeks but no complaints so far.</p>
+        <p>Shipping took around 6 days to Phoenix which is what they said it would be. Applied one to my phone and one to my work laptop. Can't really tell it's there which is what I wanted. Not giving five stars yet just because I've only had it a couple weeks.</p>
         <div class="review-footer">
           <div class="review-avatar">LH</div>
           <div>
             <div class="review-name">Lauren H.</div>
-            <div class="review-meta">Phoenix, AZ &middot; 1 week ago</div>
+            <div class="review-meta">Phoenix, AZ · 1 week ago</div>
           </div>
           <span class="verified">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
             Verified
           </span>
         </div>
@@ -660,31 +697,31 @@
     <div class="faq-list">
       <details class="faq-item">
         <summary>What exactly is PureWave and what does it do? <span class="faq-icon">+</span></summary>
-        <p>PureWave is a nano-anion silicone disc &mdash; a premium lifestyle wellness accessory you place on your everyday devices. It's for people who are intentional about their technology environment. It has no effect on device signal, wireless charging, GPS, Bluetooth or performance of any kind.</p>
+        <p>PureWave is a nano-anion silicone disc — a premium lifestyle wellness accessory you place on your everyday devices. It's for people who are intentional about their technology environment. It has no effect on device signal, wireless charging, GPS, Bluetooth or performance of any kind.</p>
       </details>
       <details class="faq-item">
         <summary>Will it affect my phone signal, Wi-Fi or wireless charging? <span class="faq-icon">+</span></summary>
-        <p>Zero effect. PureWave is designed to have absolutely no impact on any device function. Signal, GPS, NFC, Bluetooth, wireless charging &mdash; all completely unaffected. You will notice no difference in how your device performs.</p>
+        <p>Zero effect. PureWave is designed to have absolutely no impact on any device function. Signal, GPS, NFC, Bluetooth, wireless charging — all completely unaffected.</p>
       </details>
       <details class="faq-item">
         <summary>How do I put it on? <span class="faq-icon">+</span></summary>
-        <p>Peel the adhesive backing. Press firmly onto the back of your device. Hold for 30 seconds. Done. It works through most phone cases, so you don't need to remove yours. Each pack includes a placement guide showing the best position for each device type.</p>
+        <p>Peel the adhesive backing. Press firmly onto the back of your device. Hold for 30 seconds. Done. It works through most phone cases. Each pack includes a placement guide.</p>
       </details>
       <details class="faq-item">
         <summary>How long does it last? <span class="faq-icon">+</span></summary>
-        <p>PureWave is designed to last the full lifespan of your device. No batteries. No refills. No re-calibration. Apply once and it's permanently there. When you upgrade devices, simply order again &mdash; most customers keep a spare pack exactly for this reason.</p>
+        <p>PureWave is designed to last the full lifespan of your device. No batteries. No refills. No re-calibration. Apply once and it's permanently there.</p>
       </details>
       <details class="faq-item">
         <summary>How many do I actually need? <span class="faq-icon">+</span></summary>
-        <p>One disc per device. The average household has 8&ndash;12 devices. Most customers start with the household 12-pack and wish they'd grabbed the 18-pack. The family pack at $119 works out to $6.61 per disc &mdash; the lowest price per unit we offer, with free shipping included.</p>
+        <p>One disc per device. The average household has 8–12 devices. Most customers start with the household 12-pack and wish they'd grabbed the 18-pack.</p>
       </details>
       <details class="faq-item">
         <summary>What if I'm not happy with it? <span class="faq-icon">+</span></summary>
-        <p>Then we want to know about it and make it right. Full 30-day money-back guarantee, no questions asked, no restocking fees. Email hello@purewave.com and we'll process your refund within 3 business days. We'd rather refund you than have a customer who isn't happy.</p>
+        <p>Full 30-day money-back guarantee, no questions asked, no restocking fees. Email hello@purewave.com and we'll process your refund within 3 business days.</p>
       </details>
       <details class="faq-item">
         <summary>How fast will it arrive? <span class="faq-icon">+</span></summary>
-        <p>Orders ship from our US fulfillment center within 48 hours. Most domestic customers receive their order in 3&ndash;5 business days. Free shipping on every single order &mdash; no minimum.</p>
+        <p>Orders ship from our US fulfillment center within 48 hours. Most domestic customers receive their order in 3–5 business days. Free shipping on every single order.</p>
       </details>
     </div>
   </div>
@@ -695,11 +732,11 @@
   <div class="wrap">
     <span class="section-eyebrow">The Only Question Left</span>
     <h2 class="section-title" data-split-text>
-      What are you<br>waiting for?
+      What are you<br><em>waiting for?</em>
     </h2>
     <p class="section-sub">Tens of thousands of customers didn't overthink it. They ordered, applied it in 10 seconds, and got on with their lives. You're covered by a 30-day money-back guarantee. There's no downside to trying.</p>
-    <a href="#buy" class="btn-primary" data-magnetic>Claim My 50% Off Now <span class="arr">&rarr;</span></a>
-    <p class="final-sub-note">&#128274; Secure checkout &middot; Ships within 48 hours &middot; Free returns</p>
+    <a href="#buy" class="btn-primary">Claim My 50% Off Now <span class="arr">&rarr;</span></a>
+    <p class="final-sub-note">🔒 Secure checkout · Ships within 48 hours · Free returns</p>
   </div>
 </section>
 
@@ -739,22 +776,22 @@
       </div>
     </div>
     <div class="footer-disclaimer-full">
-      PureWave is a lifestyle wellness accessory. Individual experiences vary. These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease or medical condition. Always consult a qualified healthcare professional for any health concerns.
+      PureWave is a lifestyle wellness accessory. Individual experiences vary. These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease or medical condition.
     </div>
     <div class="footer-bottom">
-      <span>&copy; 2026 PureWave. All rights reserved.</span>
-      <span>VISA &middot; Mastercard &middot; AMEX &middot; PayPal &middot; Apple Pay &middot; Shop Pay</span>
+      <span>© 2026 PureWave. All rights reserved.</span>
+      <span>VISA · Mastercard · AMEX · PayPal · Apple Pay · Shop Pay</span>
     </div>
   </div>
 </footer>
 
-<!-- ============ LIVE NOTIF ============ -->
+<!-- Live notification toast -->
 <div class="live-notif" data-live-notif role="status" aria-live="polite">
   <div class="live-notif-avatar" data-live-avatar></div>
   <div data-live-text></div>
 </div>
 
-<!-- ============ STICKY CART ============ -->
+<!-- Sticky cart -->
 <div class="sticky-cart" data-sticky-cart role="complementary" aria-label="Quick buy">
   <div class="sticky-cart-inner">
     <img src="assets/product-duo.png" alt="" class="sticky-cart-img">
@@ -765,15 +802,15 @@
         <span class="sc-now" data-sticky-now>$89 USD</span>
       </span>
     </div>
-    <a href="#buy" class="sticky-cart-btn" data-magnetic>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <a href="#buy" class="sticky-cart-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
       </svg>
-      <span class="sc-label-long" data-sticky-btn-long>Add to Cart &middot; $89</span>
-      <span class="sc-label-short" data-sticky-btn-short>Buy $89</span>
+      <span class="sc-label-long" data-sticky-btn-long>Add · $89</span>
+      <span class="sc-label-short" data-sticky-btn-short>$89</span>
     </a>
   </div>
 </div>
-    </main>
-  </body>
+
+</body>
 </html>
