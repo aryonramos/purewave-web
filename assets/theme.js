@@ -1,40 +1,32 @@
 /* =================================================================
- * PUREWAVE — v3 site logic
- * Smooth scroll, multiple 3D scenes, scroll-tied animations,
- * countdown, bundle selector, sticky cart, live notifications.
+ * PUREWAVE — v4 site logic
+ * Narrative 3D scenes: phone+disc apply, EMF chaos→calm, shield field.
  * ================================================================= */
 (function () {
   "use strict";
 
-  /* ---------- env detection ---------- */
   var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var isTouch = window.matchMedia("(hover: none)").matches;
   var isMobile = window.innerWidth < 700;
 
-  /* ---------- math helpers ---------- */
   function lerp(a, b, t) { return a + (b - a) * t; }
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
   function easeInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
   function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+  function smoothstep(a, b, t) { var x = clamp((t - a) / (b - a), 0, 1); return x * x * (3 - 2 * x); }
 
-  /* =================================================================
-   * SMOOTH SCROLL — minimal Lenis-like inertia. Disabled on touch
-   * (native scroll is better on mobile / supports momentum out the box).
-   * ================================================================= */
+  /* ============== SMOOTH SCROLL ============== */
   function initSmoothScroll() {
-    if (isTouch || prefersReducedMotion) return;
-    // Native smooth scroll behavior is fine; we layer a JS smoothing on top.
+    if (isTouch || prefersReducedMotion) {
+      window.__pwSmoothY = window.scrollY;
+      window.addEventListener("scroll", function () { window.__pwSmoothY = window.scrollY; }, { passive: true });
+      return;
+    }
     var current = window.scrollY;
-    var target = window.scrollY;
-    var ease = 0.1;
     var raf = null;
-
-    // We don't take over scroll completely (that would break anchor links,
-    // dev tools, etc). Instead we just smooth the values used by our
-    // scroll-driven 3D scenes via a custom event.
     function tick() {
-      target = window.scrollY;
-      current = lerp(current, target, ease);
+      var target = window.scrollY;
+      current = lerp(current, target, 0.1);
       if (Math.abs(current - target) > 0.1) {
         window.__pwSmoothY = current;
         raf = requestAnimationFrame(tick);
@@ -43,15 +35,11 @@
         raf = null;
       }
     }
-    window.addEventListener("scroll", function () {
-      if (!raf) raf = requestAnimationFrame(tick);
-    }, { passive: true });
+    window.addEventListener("scroll", function () { if (!raf) raf = requestAnimationFrame(tick); }, { passive: true });
     window.__pwSmoothY = window.scrollY;
   }
 
-  /* =================================================================
-   * SCROLL PROGRESS BAR (top of page)
-   * ================================================================= */
+  /* ============== PROGRESS BAR ============== */
   function initScrollProgress() {
     var bar = document.querySelector("[data-scroll-progress]");
     if (!bar) return;
@@ -63,15 +51,11 @@
       bar.style.transform = "scaleX(" + p.toFixed(4) + ")";
       raf = null;
     }
-    window.addEventListener("scroll", function () {
-      if (!raf) raf = requestAnimationFrame(update);
-    }, { passive: true });
+    window.addEventListener("scroll", function () { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
     update();
   }
 
-  /* =================================================================
-   * SCROLL REVEAL — cards animate in on scroll-into-view
-   * ================================================================= */
+  /* ============== SCROLL REVEAL ============== */
   function initScrollReveal() {
     var tagMap = [
       [".problem-card", "reveal-up", 100],
@@ -93,30 +77,22 @@
       });
     });
     if (!("IntersectionObserver" in window)) {
-      document.querySelectorAll(".reveal-up, .reveal-left, .reveal-scale")
-        .forEach(function (el) { el.classList.add("visible"); });
+      document.querySelectorAll(".reveal-up, .reveal-left, .reveal-scale").forEach(function (el) { el.classList.add("visible"); });
       return;
     }
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          e.target.classList.add("visible");
-          io.unobserve(e.target);
-        }
+        if (e.isIntersecting) { e.target.classList.add("visible"); io.unobserve(e.target); }
       });
     }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
-    document.querySelectorAll(".reveal-up, .reveal-left, .reveal-scale")
-      .forEach(function (el) { io.observe(el); });
+    document.querySelectorAll(".reveal-up, .reveal-left, .reveal-scale").forEach(function (el) { io.observe(el); });
   }
 
-  /* =================================================================
-   * SPLIT TEXT — split <br>-separated lines, slide each up
-   * ================================================================= */
+  /* ============== SPLIT TEXT ============== */
   function initSplitText() {
     if (prefersReducedMotion) return;
     var els = document.querySelectorAll("[data-split-text]");
     if (!els.length) return;
-
     els.forEach(function (el) {
       var html = el.innerHTML;
       var parts = html.split(/<br\s*\/?>/i);
@@ -124,7 +100,6 @@
         return '<span class="pw-split-line"><span class="pw-split-line-inner">' + line.trim() + '</span></span>';
       }).join("");
     });
-
     if (!("IntersectionObserver" in window)) {
       document.querySelectorAll(".pw-split-line").forEach(function (l) { l.classList.add("is-revealed"); });
       return;
@@ -143,9 +118,7 @@
     els.forEach(function (el) { io.observe(el); });
   }
 
-  /* =================================================================
-   * COUNTDOWN — stored in sessionStorage so refresh doesn't reset it
-   * ================================================================= */
+  /* ============== COUNTDOWN ============== */
   function initCountdown() {
     var bar = document.querySelector("[data-countdown]");
     if (!bar) return;
@@ -172,46 +145,37 @@
     setInterval(tick, 1000);
   }
 
-  /* =================================================================
-   * BUNDLE SELECTOR (with sticky-cart sync)
-   * ================================================================= */
+  /* ============== BUNDLE SELECTOR ============== */
   var BUNDLES = {
     "1": { qty: "6×",  label: "Starter Pack",   now: 59,  was: 118 },
     "2": { qty: "12×", label: "Household Pack", now: 89,  was: 178 },
     "3": { qty: "18×", label: "Family Pack",    now: 119, was: 238 }
   };
-
   function initBundleSelector() {
     var cards = document.querySelectorAll("[data-bundle]");
     var variantInput = document.querySelector("[data-bundle-variant-input]");
     var ctaText = document.querySelector("[data-bundle-cta-text]");
     if (!cards.length) return;
-
     function select(key) {
-      var b = BUNDLES[key];
-      if (!b) return;
+      var b = BUNDLES[key]; if (!b) return;
       cards.forEach(function (card) {
         var active = card.getAttribute("data-bundle") === key;
         card.classList.toggle("active", active);
         card.setAttribute("aria-pressed", active);
       });
-      if (variantInput) {
-        variantInput.value = variantInput.getAttribute("data-variant-" + key) || variantInput.value;
-      }
+      if (variantInput) variantInput.value = variantInput.getAttribute("data-variant-" + key) || variantInput.value;
       if (ctaText) ctaText.textContent = "Add To Cart \u00B7 $" + b.now.toFixed(2) + " USD";
-
       var sLabel = document.querySelector("[data-sticky-label]");
-      var sWas   = document.querySelector("[data-sticky-was]");
-      var sNow   = document.querySelector("[data-sticky-now]");
-      var sBtnL  = document.querySelector("[data-sticky-btn-long]");
-      var sBtnS  = document.querySelector("[data-sticky-btn-short]");
+      var sWas = document.querySelector("[data-sticky-was]");
+      var sNow = document.querySelector("[data-sticky-now]");
+      var sBtnL = document.querySelector("[data-sticky-btn-long]");
+      var sBtnS = document.querySelector("[data-sticky-btn-short]");
       if (sLabel) sLabel.textContent = "PureWave " + b.label;
-      if (sWas)   sWas.textContent  = "$" + b.was;
-      if (sNow)   sNow.textContent  = "$" + b.now + " USD";
-      if (sBtnL)  sBtnL.textContent = "Add to Cart \u00B7 $" + b.now;
-      if (sBtnS)  sBtnS.textContent = "Buy $" + b.now;
+      if (sWas) sWas.textContent = "$" + b.was;
+      if (sNow) sNow.textContent = "$" + b.now + " USD";
+      if (sBtnL) sBtnL.textContent = "Add to Cart \u00B7 $" + b.now;
+      if (sBtnS) sBtnS.textContent = "Buy $" + b.now;
     }
-
     cards.forEach(function (card) {
       card.addEventListener("click", function () {
         var key = card.getAttribute("data-bundle");
@@ -221,9 +185,7 @@
     select("2");
   }
 
-  /* =================================================================
-   * STICKY CART — visible after a bit of scroll
-   * ================================================================= */
+  /* ============== STICKY CART ============== */
   function initStickyCart() {
     var bar = document.querySelector("[data-sticky-cart]");
     if (!bar) return;
@@ -232,31 +194,27 @@
     onScroll();
   }
 
-  /* =================================================================
-   * LIVE NOTIFICATIONS — fake purchase toasts
-   * ================================================================= */
+  /* ============== LIVE NOTIFICATIONS ============== */
   var purchases = [
-    { name: "Sarah",   city: "Austin, TX",    product: "Household Pack", time: "12 min ago" },
-    { name: "Michael", city: "Chicago, IL",   product: "Family Pack",    time: "8 min ago"  },
-    { name: "Emma",    city: "Denver, CO",    product: "Starter Pack",   time: "5 min ago"  },
-    { name: "Jake",    city: "Seattle, WA",   product: "Household Pack", time: "3 min ago"  },
-    { name: "Lauren",  city: "Phoenix, AZ",   product: "Family Pack",    time: "1 min ago"  },
-    { name: "Ryan",    city: "Nashville, TN", product: "Household Pack", time: "just now"   },
-    { name: "Olivia",  city: "Portland, OR",  product: "Starter Pack",   time: "4 min ago"  },
-    { name: "Marcus",  city: "San Diego, CA", product: "Family Pack",    time: "7 min ago"  }
+    { name: "Sarah", city: "Austin, TX", product: "Household Pack", time: "12 min ago" },
+    { name: "Michael", city: "Chicago, IL", product: "Family Pack", time: "8 min ago" },
+    { name: "Emma", city: "Denver, CO", product: "Starter Pack", time: "5 min ago" },
+    { name: "Jake", city: "Seattle, WA", product: "Household Pack", time: "3 min ago" },
+    { name: "Lauren", city: "Phoenix, AZ", product: "Family Pack", time: "1 min ago" },
+    { name: "Ryan", city: "Nashville, TN", product: "Household Pack", time: "just now" },
+    { name: "Olivia", city: "Portland, OR", product: "Starter Pack", time: "4 min ago" },
+    { name: "Marcus", city: "San Diego, CA", product: "Family Pack", time: "7 min ago" }
   ];
-
   function initLiveNotif() {
     var notif = document.querySelector("[data-live-notif]");
     if (!notif) return;
     var avatar = notif.querySelector("[data-live-avatar]");
-    var text   = notif.querySelector("[data-live-text]");
+    var text = notif.querySelector("[data-live-text]");
     var idx = 0;
     function show() {
       var p = purchases[idx % purchases.length];
       if (avatar) avatar.textContent = p.name[0];
-      if (text) text.innerHTML =
-        "<b>" + p.name + " from " + p.city + "</b><br>" +
+      if (text) text.innerHTML = "<b>" + p.name + " from " + p.city + "</b><br>" +
         "<span style=\"color:#6a6b72\">ordered the " + p.product + "</span><br>" +
         "<span style=\"color:#9a9ba0;font-size:11px\">" + p.time + "</span>";
       notif.classList.add("show");
@@ -266,13 +224,10 @@
     setTimeout(function () { show(); setInterval(show, 14000); }, 7000);
   }
 
-  /* =================================================================
-   * NUMBER COUNTERS — animate 0 → target on enter view
-   * ================================================================= */
+  /* ============== COUNTERS ============== */
   function initCounters() {
     var els = document.querySelectorAll("[data-counter]");
     if (!els.length || !("IntersectionObserver" in window)) return;
-
     function animate(el) {
       var target = parseFloat(el.getAttribute("data-counter"));
       var suffix = el.getAttribute("data-suffix") || "";
@@ -281,24 +236,18 @@
       var hasComma = target >= 1000 && decimals === 0;
       var duration = 1700;
       var start = performance.now();
-
       function step(now) {
         var t = Math.min(1, (now - start) / duration);
         var v = target * easeOutCubic(t);
         var display;
-        if (decimals > 0) {
-          display = v.toFixed(decimals);
-        } else if (hasComma) {
-          display = Math.floor(v).toLocaleString();
-        } else {
-          display = Math.floor(v);
-        }
+        if (decimals > 0) display = v.toFixed(decimals);
+        else if (hasComma) display = Math.floor(v).toLocaleString();
+        else display = Math.floor(v);
         el.textContent = prefix + display + suffix;
         if (t < 1) requestAnimationFrame(step);
       }
       requestAnimationFrame(step);
     }
-
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (e.isIntersecting) { animate(e.target); io.unobserve(e.target); }
@@ -307,14 +256,11 @@
     els.forEach(function (el) { io.observe(el); });
   }
 
-  /* =================================================================
-   * PARALLAX IMAGES — light scroll-driven y-translation
-   * ================================================================= */
+  /* ============== PARALLAX ============== */
   function initParallaxImages() {
     if (prefersReducedMotion) return;
     var wraps = document.querySelectorAll("[data-parallax-image]");
     if (!wraps.length) return;
-
     var items = [];
     wraps.forEach(function (wrap) {
       var img = wrap.querySelector("img");
@@ -322,7 +268,6 @@
       img.style.transform = "translate3d(0,0,0) scale(1.1)";
       items.push({ wrap: wrap, img: img });
     });
-
     var raf = null;
     function update() {
       var vh = window.innerHeight;
@@ -336,14 +281,11 @@
       });
       raf = null;
     }
-    function onScroll() { if (!raf) raf = requestAnimationFrame(update); }
-    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("scroll", function () { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
     update();
   }
 
-  /* =================================================================
-   * BAR FILL — animate `--bar-fill` CSS var when in-view
-   * ================================================================= */
+  /* ============== BAR FILL ============== */
   function initBarFill() {
     var els = document.querySelectorAll("[data-bar-fill]");
     if (!els.length || !("IntersectionObserver" in window)) return;
@@ -361,24 +303,19 @@
   }
 
   /* =================================================================
-   *           THREE.JS — BUILD THE PUREWAVE DISC
+   * THREE.JS — DISC, PHONE, EMF WAVES, SHIELD FIELD
    * ================================================================= */
-  function buildPureWaveDisc(THREE, opts) {
-    opts = opts || {};
+
+  function buildPureWaveDisc(THREE) {
     var disc = new THREE.Group();
-    disc.name = "PureWaveDisc";
-
-    var radius = 1.0;
-    var thickness = 0.085;
-
-    // Holographic shader for the curved face
+    var radius = 1.0, thickness = 0.085;
     var holoMat = new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
-        uColorA: { value: new THREE.Color(0xf6c942) }, // warm gold
-        uColorB: { value: new THREE.Color(0xb6e25b) }, // green-yellow
-        uColorC: { value: new THREE.Color(0xffe89a) }, // bright highlight
-        uColorD: { value: new THREE.Color(0xb8872c) }  // deep gold
+        uColorA: { value: new THREE.Color(0xf6c942) },
+        uColorB: { value: new THREE.Color(0xb6e25b) },
+        uColorC: { value: new THREE.Color(0xffe89a) },
+        uColorD: { value: new THREE.Color(0xb8872c) }
       },
       vertexShader: [
         "varying vec3 vNormal;",
@@ -394,10 +331,7 @@
       ].join("\n"),
       fragmentShader: [
         "uniform float uTime;",
-        "uniform vec3 uColorA;",
-        "uniform vec3 uColorB;",
-        "uniform vec3 uColorC;",
-        "uniform vec3 uColorD;",
+        "uniform vec3 uColorA, uColorB, uColorC, uColorD;",
         "varying vec3 vNormal;",
         "varying vec3 vViewDir;",
         "varying vec2 vUv;",
@@ -418,35 +352,24 @@
         "}"
       ].join("\n")
     });
-
     var bodyGeo = new THREE.CylinderGeometry(radius, radius, thickness, 96, 1, false);
-    var body = new THREE.Mesh(bodyGeo, holoMat);
-    disc.add(body);
+    disc.add(new THREE.Mesh(bodyGeo, holoMat));
 
-    // Black inner faces — top/bottom
-    var innerRadius = 0.62;
-    var innerGeo = new THREE.CircleGeometry(innerRadius, 96);
-    var innerMat = new THREE.MeshStandardMaterial({
-      color: 0x0a0a0e,
-      roughness: 0.55,
-      metalness: 0.2
-    });
+    var innerGeo = new THREE.CircleGeometry(0.62, 96);
+    var innerMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0e, roughness: 0.55, metalness: 0.2 });
     var innerTop = new THREE.Mesh(innerGeo, innerMat);
     innerTop.rotation.x = -Math.PI / 2;
     innerTop.position.y = thickness / 2 + 0.001;
     disc.add(innerTop);
-
     var innerBot = new THREE.Mesh(innerGeo, innerMat);
     innerBot.rotation.x = Math.PI / 2;
     innerBot.position.y = -thickness / 2 - 0.001;
     disc.add(innerBot);
 
-    // Cardano-style constellation
     var dotMat = new THREE.MeshBasicMaterial({ color: 0xf3c956 });
     var bigDot = new THREE.CircleGeometry(0.06, 32);
     var midDot = new THREE.CircleGeometry(0.045, 24);
-    var smDot  = new THREE.CircleGeometry(0.03, 24);
-
+    var smDot = new THREE.CircleGeometry(0.03, 24);
     function addDot(geo, x, z, faceY) {
       var m = new THREE.Mesh(geo, dotMat);
       m.rotation.x = -Math.PI / 2 * Math.sign(faceY);
@@ -456,45 +379,256 @@
     function constellation(faceY) {
       var s = Math.sign(faceY);
       addDot(bigDot, 0, 0, faceY);
-      var spokes = 8;
-      for (var i = 0; i < spokes; i++) {
-        var ang = (i / spokes) * Math.PI * 2;
+      for (var i = 0; i < 8; i++) {
+        var ang = (i / 8) * Math.PI * 2;
         var cx = Math.cos(ang), cz = Math.sin(ang);
         addDot(midDot, cx * 0.18 * s, cz * 0.18, faceY);
         addDot(midDot, cx * 0.32 * s, cz * 0.32, faceY);
-        addDot(smDot,  cx * 0.46 * s, cz * 0.46, faceY);
+        addDot(smDot, cx * 0.46 * s, cz * 0.46, faceY);
       }
     }
     constellation(thickness / 2 + 0.0025);
     constellation(-thickness / 2 - 0.0025);
 
-    // Gold rim ring
     var rimGeo = new THREE.TorusGeometry(radius - 0.005, 0.012, 12, 96);
-    var rimMat = new THREE.MeshStandardMaterial({
-      color: 0xffe18a,
-      roughness: 0.15,
-      metalness: 0.95,
-      emissive: 0x6a4a10,
-      emissiveIntensity: 0.4
-    });
+    var rimMat = new THREE.MeshStandardMaterial({ color: 0xffe18a, roughness: 0.15, metalness: 0.95, emissive: 0x6a4a10, emissiveIntensity: 0.4 });
     var rimTop = new THREE.Mesh(rimGeo, rimMat);
     rimTop.rotation.x = Math.PI / 2;
     rimTop.position.y = thickness / 2;
     disc.add(rimTop);
-
     var rimBot = new THREE.Mesh(rimGeo, rimMat);
     rimBot.rotation.x = Math.PI / 2;
     rimBot.position.y = -thickness / 2;
     disc.add(rimBot);
 
-    return disc;
+    return { group: disc, holoMat: holoMat };
   }
 
-  /* =================================================================
-   * GENERIC 3D SCENE BUILDER (used by hero + features + floating discs)
-   * Returns { scene, camera, renderer, disc, holoMat, dispose, setVisible }
-   * ================================================================= */
-  function makeDiscScene(THREE, mount, opts) {
+  function buildPhone3D(THREE) {
+    var phone = new THREE.Group();
+    var w = 1.7, h = 3.4, d = 0.16;
+    var cornerR = 0.22;
+
+    function roundedShape(width, height, radius) {
+      var shape = new THREE.Shape();
+      var x0 = -width / 2, y0 = -height / 2, x1 = width / 2, y1 = height / 2;
+      shape.moveTo(x0 + radius, y0);
+      shape.lineTo(x1 - radius, y0);
+      shape.quadraticCurveTo(x1, y0, x1, y0 + radius);
+      shape.lineTo(x1, y1 - radius);
+      shape.quadraticCurveTo(x1, y1, x1 - radius, y1);
+      shape.lineTo(x0 + radius, y1);
+      shape.quadraticCurveTo(x0, y1, x0, y1 - radius);
+      shape.lineTo(x0, y0 + radius);
+      shape.quadraticCurveTo(x0, y0, x0 + radius, y0);
+      return shape;
+    }
+
+    var bodyGeo = new THREE.ExtrudeGeometry(roundedShape(w, h, cornerR), {
+      depth: d, bevelEnabled: true, bevelSize: 0.018, bevelThickness: 0.018, bevelSegments: 4, curveSegments: 18
+    });
+    bodyGeo.center();
+    var bodyMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1f, roughness: 0.32, metalness: 0.78 });
+    phone.add(new THREE.Mesh(bodyGeo, bodyMat));
+
+    var screenW = w - 0.14, screenH = h - 0.18;
+    var screenGeo = new THREE.ExtrudeGeometry(roundedShape(screenW, screenH, cornerR - 0.04), {
+      depth: 0.005, bevelEnabled: false, curveSegments: 16
+    });
+    screenGeo.center();
+    var screenMat = new THREE.MeshStandardMaterial({
+      color: 0x080a14, roughness: 0.05, metalness: 0.55,
+      emissive: 0x0a1a3a, emissiveIntensity: 0.25
+    });
+    var screen = new THREE.Mesh(screenGeo, screenMat);
+    screen.position.z = d / 2 + 0.005;
+    phone.add(screen);
+
+    var islandGeo = new THREE.ExtrudeGeometry(roundedShape(0.6, 0.18, 0.09), { depth: 0.004, bevelEnabled: false, curveSegments: 12 });
+    islandGeo.center();
+    var islandMat = new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.2, metalness: 0.4 });
+    var island = new THREE.Mesh(islandGeo, islandMat);
+    island.position.set(0, screenH / 2 - 0.22, d / 2 + 0.012);
+    phone.add(island);
+
+    // Camera bump on back
+    var camBumpGeo = new THREE.BoxGeometry(0.7, 0.7, 0.06);
+    var camBumpMat = new THREE.MeshStandardMaterial({ color: 0x14141a, roughness: 0.4, metalness: 0.8 });
+    var camBump = new THREE.Mesh(camBumpGeo, camBumpMat);
+    camBump.position.set(-w / 2 + 0.55, h / 2 - 0.55, -d / 2 - 0.03);
+    phone.add(camBump);
+
+    var lensRingGeo = new THREE.TorusGeometry(0.13, 0.024, 12, 32);
+    var lensRingMat = new THREE.MeshStandardMaterial({ color: 0x2a2a30, roughness: 0.3, metalness: 0.85 });
+    var lensGlassGeo = new THREE.CircleGeometry(0.11, 24);
+    var lensGlassMat = new THREE.MeshStandardMaterial({
+      color: 0x05050a, roughness: 0.1, metalness: 0.5,
+      emissive: 0x081530, emissiveIntensity: 0.4
+    });
+
+    var lens1Ring = new THREE.Mesh(lensRingGeo, lensRingMat);
+    lens1Ring.position.set(camBump.position.x - 0.13, camBump.position.y + 0.13, camBump.position.z - 0.04);
+    phone.add(lens1Ring);
+    var lens1Glass = new THREE.Mesh(lensGlassGeo, lensGlassMat);
+    lens1Glass.position.copy(lens1Ring.position);
+    lens1Glass.position.z -= 0.005;
+    lens1Glass.rotation.y = Math.PI;
+    phone.add(lens1Glass);
+
+    var lens2Ring = new THREE.Mesh(lensRingGeo, lensRingMat);
+    lens2Ring.position.set(camBump.position.x + 0.13, camBump.position.y - 0.13, camBump.position.z - 0.04);
+    phone.add(lens2Ring);
+    var lens2Glass = new THREE.Mesh(lensGlassGeo, lensGlassMat);
+    lens2Glass.position.copy(lens2Ring.position);
+    lens2Glass.position.z -= 0.005;
+    lens2Glass.rotation.y = Math.PI;
+    phone.add(lens2Glass);
+
+    // Subtle glow plane on screen
+    var glowGeo = new THREE.PlaneGeometry(screenW * 0.92, screenH * 0.94);
+    var glowMat = new THREE.MeshBasicMaterial({
+      color: 0x4a78ff, transparent: true, opacity: 0.08,
+      blending: THREE.AdditiveBlending, depthWrite: false
+    });
+    var glow = new THREE.Mesh(glowGeo, glowMat);
+    glow.position.z = d / 2 + 0.012;
+    phone.add(glow);
+
+    return { group: phone, screen: screen, glow: glow };
+  }
+
+  function buildEMFWaves(THREE) {
+    var group = new THREE.Group();
+    var ringMat = new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uChaos: { value: 1.0 },
+        uColorChaos: { value: new THREE.Color(0xff5a3c) },
+        uColorCalm: { value: new THREE.Color(0x6ec3ff) },
+        uColorGold: { value: new THREE.Color(0xffd770) }
+      },
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      vertexShader: [
+        "uniform float uTime;",
+        "uniform float uChaos;",
+        "attribute float aRingIndex;",
+        "varying float vAlpha;",
+        "varying vec2 vUv;",
+        "varying float vDistortion;",
+        "void main(){",
+        "  vUv = uv;",
+        "  float ringT = mod(uTime * 0.4 + aRingIndex * 0.13, 1.0);",
+        "  float radiusMul = 0.4 + ringT * 2.6;",
+        "  float angle = atan(position.z, position.x);",
+        "  float baseR = length(position.xz);",
+        "  float jitter = (sin(angle * 7.0 + uTime * 3.0 + aRingIndex * 1.7) * 0.5",
+        "                + sin(angle * 13.0 - uTime * 4.5) * 0.25",
+        "                + sin(angle * 3.0 + uTime * 1.5 + aRingIndex) * 0.2);",
+        "  float distortion = jitter * uChaos * 0.45;",
+        "  vDistortion = distortion;",
+        "  float newR = baseR * radiusMul * (1.0 + distortion);",
+        "  vec3 newPos = vec3(cos(angle) * newR, position.y, sin(angle) * newR);",
+        "  vAlpha = (1.0 - ringT) * smoothstep(0.0, 0.15, ringT);",
+        "  gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);",
+        "}"
+      ].join("\n"),
+      fragmentShader: [
+        "uniform float uChaos;",
+        "uniform vec3 uColorChaos;",
+        "uniform vec3 uColorCalm;",
+        "uniform vec3 uColorGold;",
+        "varying float vAlpha;",
+        "varying vec2 vUv;",
+        "varying float vDistortion;",
+        "void main(){",
+        "  float edge = abs(vUv.y - 0.5) * 2.0;",
+        "  float ring = smoothstep(1.0, 0.0, edge);",
+        "  ring = pow(ring, 1.5);",
+        "  vec3 calmCol = mix(uColorCalm, uColorGold, 0.4);",
+        "  vec3 col = mix(calmCol, uColorChaos, uChaos);",
+        "  col += vec3(abs(vDistortion) * 0.3) * uChaos;",
+        "  float a = vAlpha * ring * (0.55 + 0.45 * (1.0 - uChaos * 0.3));",
+        "  if (a < 0.01) discard;",
+        "  gl_FragColor = vec4(col, a);",
+        "}"
+      ].join("\n")
+    });
+
+    var N_RINGS = 6;
+    for (var i = 0; i < N_RINGS; i++) {
+      var torus = new THREE.TorusGeometry(0.6, 0.04, 8, 96);
+      var count = torus.attributes.position.count;
+      var idx = new Float32Array(count);
+      for (var j = 0; j < count; j++) idx[j] = i;
+      torus.setAttribute("aRingIndex", new THREE.BufferAttribute(idx, 1));
+      var mesh = new THREE.Mesh(torus, ringMat);
+      mesh.rotation.x = Math.PI / 2;
+      group.add(mesh);
+    }
+    return { group: group, mat: ringMat };
+  }
+
+  function buildShieldField(THREE) {
+    var group = new THREE.Group();
+    var SEGS = 28;
+    var R = 1.6;
+    var positions = [];
+    for (var phi = 0; phi <= SEGS; phi++) {
+      for (var theta = 0; theta <= SEGS; theta++) {
+        var p = (phi / SEGS) * Math.PI;
+        var t = (theta / SEGS) * Math.PI * 2;
+        positions.push(
+          R * Math.sin(p) * Math.cos(t),
+          R * Math.cos(p),
+          R * Math.sin(p) * Math.sin(t)
+        );
+      }
+    }
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    var mat = new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uIntensity: { value: 0.0 },
+        uColor: { value: new THREE.Color(0xffd770) }
+      },
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      vertexShader: [
+        "uniform float uTime;",
+        "uniform float uIntensity;",
+        "varying float vAlpha;",
+        "void main(){",
+        "  vec3 p = position;",
+        "  float wave = sin(p.x * 3.0 + uTime * 1.5) + sin(p.y * 3.0 + uTime * 1.1);",
+        "  p += normalize(p) * wave * 0.04 * uIntensity;",
+        "  vAlpha = uIntensity * (0.4 + 0.6 * (sin(uTime * 2.0 + p.x + p.y) * 0.5 + 0.5));",
+        "  gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);",
+        "  gl_PointSize = 2.5 + uIntensity * 1.5;",
+        "}"
+      ].join("\n"),
+      fragmentShader: [
+        "uniform vec3 uColor;",
+        "varying float vAlpha;",
+        "void main(){",
+        "  vec2 c = gl_PointCoord - 0.5;",
+        "  float d = length(c);",
+        "  if (d > 0.5) discard;",
+        "  float a = (1.0 - d * 2.0) * vAlpha;",
+        "  gl_FragColor = vec4(uColor, a * 0.7);",
+        "}"
+      ].join("\n")
+    });
+    group.add(new THREE.Points(geo, mat));
+    return { group: group, mat: mat };
+  }
+
+  /* ============== SCENE FACTORY ============== */
+  function makeScene(THREE, mount, opts) {
     opts = opts || {};
     var width = mount.clientWidth || 400;
     var height = mount.clientHeight || 400;
@@ -506,11 +640,7 @@
 
     var renderer;
     try {
-      renderer = new THREE.WebGLRenderer({
-        antialias: true,
-        alpha: true,
-        powerPreference: "high-performance"
-      });
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
     } catch (err) { return null; }
 
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -519,7 +649,6 @@
     if (THREE.sRGBEncoding) renderer.outputEncoding = THREE.sRGBEncoding;
     mount.appendChild(renderer.domElement);
 
-    // Lighting
     scene.add(new THREE.HemisphereLight(0xffffff, opts.darkBG ? 0x111122 : 0x4a3a1a, 0.85));
     var keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
     keyLight.position.set(3, 5, 4);
@@ -531,16 +660,6 @@
     rimLight.position.set(2, -2, 1);
     scene.add(rimLight);
 
-    var disc = buildPureWaveDisc(THREE);
-    disc.rotation.x = opts.startRotX || -0.45;
-    disc.rotation.y = opts.startRotY || 0;
-    scene.add(disc);
-
-    var holoMat = null;
-    disc.traverse(function (o) {
-      if (o.material && o.material.uniforms && o.material.uniforms.uTime) holoMat = o.material;
-    });
-
     function resize() {
       var w = mount.clientWidth, h = mount.clientHeight;
       if (!w || !h) return;
@@ -550,17 +669,17 @@
     }
     window.addEventListener("resize", resize);
 
-    function dispose() {
-      renderer.dispose();
-      if (renderer.domElement.parentNode) renderer.domElement.parentNode.removeChild(renderer.domElement);
-    }
-
-    return { scene: scene, camera: camera, renderer: renderer, disc: disc, holoMat: holoMat, mount: mount, resize: resize, dispose: dispose };
+    return { scene: scene, camera: camera, renderer: renderer, mount: mount, resize: resize };
   }
 
-  /* =================================================================
-   * HERO 3D — drag, mouse-follow, idle spin, gentle float
-   * ================================================================= */
+  function getBlockProgress(block) {
+    var rect = block.getBoundingClientRect();
+    var blockH = block.offsetHeight;
+    var vh = window.innerHeight;
+    return clamp(-rect.top / Math.max(1, blockH - vh), 0, 1);
+  }
+
+  /* ============== HERO 3D ============== */
   function initHero3D() {
     if (typeof THREE === "undefined") return;
     var stage = document.querySelector("[data-pw-3d-hero]");
@@ -568,14 +687,16 @@
     var mount = stage.querySelector("[data-pw-canvas]");
     if (!mount) return;
 
-    var s = makeDiscScene(THREE, mount, { fov: 35, camZ: 4.4, camY: 0.6 });
+    var s = makeScene(THREE, mount, { fov: 35, camZ: 4.4, camY: 0.6 });
     if (!s) return;
+    var disc = buildPureWaveDisc(THREE);
+    disc.group.rotation.x = -0.45;
+    s.scene.add(disc.group);
 
     var targetRotY = 0.4, targetRotX = -0.45;
     var curRotY = 0.4, curRotX = -0.45;
     var dragging = false;
     var lastX = 0, lastY = 0;
-    var idleSpinSpeed = 0.0035;
     var followX = 0, followY = 0;
     var startTime = performance.now();
 
@@ -607,8 +728,8 @@
 
     stage.addEventListener("mousemove", function (e) {
       var rect = stage.getBoundingClientRect();
-      followX = ((e.clientX - rect.left) / rect.width  - 0.5) * 0.25;
-      followY = ((e.clientY - rect.top)  / rect.height - 0.5) * 0.15;
+      followX = ((e.clientX - rect.left) / rect.width - 0.5) * 0.25;
+      followY = ((e.clientY - rect.top) / rect.height - 0.5) * 0.15;
     });
     stage.addEventListener("mouseleave", function () { followX = 0; followY = 0; });
 
@@ -621,15 +742,96 @@
       requestAnimationFrame(tick);
       if (!visible) return;
       var t = (performance.now() - startTime) / 1000;
-      if (s.holoMat) s.holoMat.uniforms.uTime.value = t;
-
-      if (!dragging) targetRotY += idleSpinSpeed;
+      disc.holoMat.uniforms.uTime.value = t;
+      if (!dragging) targetRotY += 0.0035;
       curRotY = lerp(curRotY, targetRotY + followX, 0.12);
       curRotX = lerp(curRotX, targetRotX + followY, 0.12);
+      disc.group.rotation.y = curRotY;
+      disc.group.rotation.x = curRotX;
+      disc.group.position.y = Math.sin(t * 0.9) * 0.06;
+      s.renderer.render(s.scene, s.camera);
+    }
+    tick();
+  }
 
-      s.disc.rotation.y = curRotY;
-      s.disc.rotation.x = curRotX;
-      s.disc.position.y = Math.sin(t * 0.9) * 0.06;
+  /* =================================================================
+   * SCENE: PHONE + DISC APPLICATION
+   * ================================================================= */
+  function initSceneApply(block) {
+    var mount = block.querySelector("[data-pw-feature-canvas]");
+    if (!mount) return;
+    var darkBG = block.classList.contains("dark");
+    var s = makeScene(THREE, mount, { fov: 36, camZ: 5.5, camY: 0.0, darkBG: darkBG });
+    if (!s) return;
+
+    var phone = buildPhone3D(THREE);
+    s.scene.add(phone.group);
+
+    var disc = buildPureWaveDisc(THREE);
+    s.scene.add(disc.group);
+
+    // Glowing target ring on phone back
+    var targetRingGeo = new THREE.TorusGeometry(0.55, 0.012, 8, 64);
+    var targetRingMat = new THREE.MeshBasicMaterial({ color: 0xffd770, transparent: true, opacity: 0 });
+    var targetRing = new THREE.Mesh(targetRingGeo, targetRingMat);
+    s.scene.add(targetRing);
+
+    var startTime = performance.now();
+    var visible = false;
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { visible = e.isIntersecting; });
+    }, { threshold: 0 }).observe(block);
+
+    function tick() {
+      requestAnimationFrame(tick);
+      if (!visible) return;
+      var t = (performance.now() - startTime) / 1000;
+      disc.holoMat.uniforms.uTime.value = t;
+
+      var p = getBlockProgress(block);
+
+      // Phone — front to back via Y rotation
+      var phoneRotY = lerp(0, Math.PI, easeInOutCubic(p)) + Math.sin(t * 0.6) * 0.04;
+      var phoneRotX = lerp(-0.15, 0.05, p) + Math.sin(t * 0.4) * 0.02;
+      phone.group.rotation.y = phoneRotY;
+      phone.group.rotation.x = phoneRotX;
+      phone.group.position.y = Math.sin(t * 0.8) * 0.04;
+
+      // Disc — sweep in from upper right, settle to center on phone back
+      var discStart = new THREE.Vector3(2.4, 0.6, 0.5);
+      var discMid   = new THREE.Vector3(1.2, 0.0, -0.2);
+      var attachLocal = new THREE.Vector3(0, 0.6, -0.085 - 0.045);
+
+      if (p < 0.45) {
+        var k = smoothstep(0, 0.45, p);
+        disc.group.position.lerpVectors(discStart, discMid, k);
+        disc.group.rotation.x = lerp(-1.4, -1.2, k);
+        disc.group.rotation.y = lerp(0.4, 0.5, k) + Math.sin(t * 0.5) * 0.05;
+        disc.group.rotation.z = lerp(0.3, 0.0, k);
+      } else if (p < 0.75) {
+        var k2 = smoothstep(0.45, 0.75, p);
+        var endPos = attachLocal.clone().applyEuler(phone.group.rotation).add(phone.group.position);
+        disc.group.position.lerpVectors(discMid, endPos, k2);
+        disc.group.rotation.x = lerp(-1.2, -Math.PI / 2, k2);
+        disc.group.rotation.y = lerp(0.5, 0, k2);
+        disc.group.rotation.z = 0;
+      } else {
+        // Attached: ride the phone
+        var qPhone = phone.group.quaternion.clone();
+        var qFlat = new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0));
+        disc.group.quaternion.copy(qPhone).multiply(qFlat);
+        var attached = attachLocal.clone().applyEuler(phone.group.rotation).add(phone.group.position);
+        disc.group.position.copy(attached);
+      }
+
+      var scale = lerp(0.85, 0.55, p);
+      disc.group.scale.setScalar(scale);
+
+      // Target ring — visible during landing approach, fades by end
+      targetRing.material.opacity = (smoothstep(0.4, 0.6, p) - smoothstep(0.7, 0.88, p)) * 0.65;
+      var ringPos = new THREE.Vector3(0, 0.6, -0.09).applyEuler(phone.group.rotation).add(phone.group.position);
+      targetRing.position.copy(ringPos);
+      targetRing.quaternion.copy(phone.group.quaternion).multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0)));
 
       s.renderer.render(s.scene, s.camera);
     }
@@ -637,149 +839,188 @@
   }
 
   /* =================================================================
-   * FEATURE PIN 3D SCENES — three sticky-pinned scenes whose disc
-   * state (rotation, scale, position) is tied to scroll progress
-   * through the parent .feature-block.
-   *
-   * Each .feature-block has a [data-pw-feature="N"] attribute (0-2)
-   * that we use to pick distinct keyframes per scene.
+   * SCENE: EMF CHAOS → CALM
    * ================================================================= */
-  function initFeaturePins() {
-    if (typeof THREE === "undefined") return;
-    if (prefersReducedMotion) return;
+  function initSceneEMF(block) {
+    var mount = block.querySelector("[data-pw-feature-canvas]");
+    if (!mount) return;
+    var darkBG = block.classList.contains("dark");
+    var s = makeScene(THREE, mount, { fov: 40, camZ: 5.0, camY: 0.0, darkBG: darkBG });
+    if (!s) return;
 
-    var blocks = document.querySelectorAll("[data-pw-feature]");
-    if (!blocks.length) return;
+    var phone = buildPhone3D(THREE);
+    phone.group.rotation.y = -0.25;
+    phone.group.rotation.x = -0.05;
+    s.scene.add(phone.group);
 
-    // Disable on very small mobile (battery/perf)
-    if (isMobile && window.innerWidth < 500) return;
+    var disc = buildPureWaveDisc(THREE);
+    disc.group.position.set(0, 3.5, -0.5);
+    disc.group.rotation.x = -Math.PI / 2;
+    disc.group.scale.setScalar(0);
+    s.scene.add(disc.group);
 
-    // Different keyframe paths per feature index
-    var keyframeSets = {
-      "0": [
-        // "Engineered" — face on, rotates side-on, reveals depth
-        { p: 0.00, rotX: -0.5, rotY: 0.0,  posY: 0.0,  scale: 1.0  },
-        { p: 0.50, rotX: -0.9, rotY: 1.2,  posY: 0.05, scale: 1.05 },
-        { p: 1.00, rotX: -1.5, rotY: 2.0,  posY: 0.0,  scale: 0.9  }
-      ],
-      "1": [
-        // "Applied" — peel/press feel: tilt forward, drop, settle
-        { p: 0.00, rotX: -1.4, rotY: 0.5,  posY: 0.4,  scale: 1.05 },
-        { p: 0.50, rotX: -1.0, rotY: 1.5,  posY: 0.0,  scale: 1.0  },
-        { p: 1.00, rotX: -0.4, rotY: 3.0,  posY: -0.05,scale: 0.95 }
-      ],
-      "2": [
-        // "Invisible" — multiple full rotations + zoom, then shrink
-        { p: 0.00, rotX: -0.3, rotY: 0.0,  posY: 0.0,  scale: 1.0  },
-        { p: 0.50, rotX: -0.6, rotY: 3.14, posY: 0.0,  scale: 1.1  },
-        { p: 1.00, rotX: -0.8, rotY: 6.28, posY: 0.0,  scale: 0.7  }
-      ]
-    };
+    var emf = buildEMFWaves(THREE);
+    s.scene.add(emf.group);
 
-    function interp(keyframes, p) {
-      for (var i = 0; i < keyframes.length - 1; i++) {
-        var a = keyframes[i], b = keyframes[i + 1];
-        if (p >= a.p && p <= b.p) {
-          var t = (p - a.p) / (b.p - a.p);
-          t = easeInOutCubic(t);
-          return {
-            rotX: lerp(a.rotX, b.rotX, t),
-            rotY: lerp(a.rotY, b.rotY, t),
-            posY: lerp(a.posY, b.posY, t),
-            scale: lerp(a.scale, b.scale, t)
-          };
-        }
+    var startTime = performance.now();
+    var visible = false;
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { visible = e.isIntersecting; });
+    }, { threshold: 0 }).observe(block);
+
+    function tick() {
+      requestAnimationFrame(tick);
+      if (!visible) return;
+      var t = (performance.now() - startTime) / 1000;
+      disc.holoMat.uniforms.uTime.value = t;
+      emf.mat.uniforms.uTime.value = t;
+
+      var p = getBlockProgress(block);
+      var chaos = lerp(1.0, 0.0, easeInOutCubic(p));
+      emf.mat.uniforms.uChaos.value = chaos;
+
+      phone.group.rotation.y = -0.25 + Math.sin(t * 0.6) * 0.06;
+      phone.group.rotation.x = -0.05 + Math.cos(t * 0.5) * 0.04;
+      phone.group.position.y = Math.sin(t * 0.9) * 0.05;
+
+      var discAppear = smoothstep(0.3, 0.7, p);
+      disc.group.scale.setScalar(discAppear * 0.7);
+      var discY = lerp(3.5, 0.4, easeInOutCubic(p));
+      var discZ = lerp(-0.5, -0.18, easeInOutCubic(p));
+      disc.group.position.set(0, discY, discZ);
+
+      if (p > 0.85) {
+        var qPhone = phone.group.quaternion.clone();
+        var qFlat = new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0));
+        disc.group.quaternion.copy(qPhone).multiply(qFlat);
+        var attached = new THREE.Vector3(0, 0.4, -0.09).applyEuler(phone.group.rotation).add(phone.group.position);
+        disc.group.position.copy(attached);
+      } else {
+        disc.group.rotation.x = -Math.PI / 2 + Math.sin(t * 0.5) * 0.05;
+        disc.group.rotation.z = t * 0.6;
       }
-      return keyframes[keyframes.length - 1];
+
+      emf.group.rotation.y = t * 0.15;
+      emf.group.scale.setScalar(lerp(1.0, 1.4, smoothstep(0.6, 1.0, p)));
+
+      if (phone.glow && phone.glow.material) {
+        phone.glow.material.opacity = lerp(0.05, 0.18, 1 - chaos);
+        phone.glow.material.color.setHex(chaos > 0.5 ? 0xff6a3c : 0x6ec3ff);
+      }
+
+      s.renderer.render(s.scene, s.camera);
     }
-
-    blocks.forEach(function (block) {
-      var idx = block.getAttribute("data-pw-feature") || "0";
-      var keyframes = keyframeSets[idx] || keyframeSets["0"];
-      var mount = block.querySelector("[data-pw-feature-canvas]");
-      if (!mount) return;
-
-      var darkBG = block.classList.contains("dark");
-      var s = makeDiscScene(THREE, mount, { fov: 38, camZ: 4.0, camY: 0.0, darkBG: darkBG });
-      if (!s) return;
-
-      // Slight starting tilt
-      s.disc.rotation.x = keyframes[0].rotX;
-
-      var startTime = performance.now();
-      var visible = false;
-      new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) { visible = e.isIntersecting; });
-      }, { threshold: 0 }).observe(block);
-
-      function tick() {
-        requestAnimationFrame(tick);
-        if (!visible) return;
-
-        var t = (performance.now() - startTime) / 1000;
-        if (s.holoMat) s.holoMat.uniforms.uTime.value = t;
-
-        var rect = block.getBoundingClientRect();
-        var blockH = block.offsetHeight;
-        var vh = window.innerHeight;
-        // Scroll progress through this block. 0 = block top hits viewport top,
-        // 1 = block bottom hits viewport bottom.
-        var progress = clamp(-rect.top / Math.max(1, blockH - vh), 0, 1);
-
-        var k = interp(keyframes, progress);
-        s.disc.rotation.x = k.rotX + Math.sin(t * 0.4) * 0.03;
-        s.disc.rotation.y = k.rotY;
-        s.disc.position.y = k.posY;
-        s.disc.scale.setScalar(k.scale);
-
-        s.renderer.render(s.scene, s.camera);
-      }
-      tick();
-    });
+    tick();
   }
 
   /* =================================================================
-   * FLOATING DISCS — small decorative discs sprinkled between sections
-   * Each spins idly + has a tiny scroll-tied rotation for life.
+   * SCENE: SHIELD FIELD
    * ================================================================= */
-  function initFloatingDiscs() {
+  function initSceneShield(block) {
+    var mount = block.querySelector("[data-pw-feature-canvas]");
+    if (!mount) return;
+    var darkBG = block.classList.contains("dark");
+    var s = makeScene(THREE, mount, { fov: 38, camZ: 5.0, camY: 0.0, darkBG: darkBG });
+    if (!s) return;
+
+    var phone = buildPhone3D(THREE);
+    phone.group.rotation.y = 0.2;
+    phone.group.rotation.x = -0.1;
+    s.scene.add(phone.group);
+
+    var disc = buildPureWaveDisc(THREE);
+    disc.group.scale.setScalar(0.55);
+    s.scene.add(disc.group);
+
+    var shield = buildShieldField(THREE);
+    s.scene.add(shield.group);
+
+    var startTime = performance.now();
+    var visible = false;
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { visible = e.isIntersecting; });
+    }, { threshold: 0 }).observe(block);
+
+    function tick() {
+      requestAnimationFrame(tick);
+      if (!visible) return;
+      var t = (performance.now() - startTime) / 1000;
+      disc.holoMat.uniforms.uTime.value = t;
+      shield.mat.uniforms.uTime.value = t;
+
+      var p = getBlockProgress(block);
+
+      var rotY = 0.2 + p * Math.PI * 0.8;
+      var rotX = -0.1 + Math.sin(t * 0.4) * 0.03;
+      phone.group.rotation.y = rotY;
+      phone.group.rotation.x = rotX;
+      phone.group.position.y = Math.sin(t * 0.8) * 0.04;
+
+      var qPhone = phone.group.quaternion.clone();
+      var qFlat = new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0));
+      disc.group.quaternion.copy(qPhone).multiply(qFlat);
+      var attached = new THREE.Vector3(0, 0.4, -0.09).applyEuler(phone.group.rotation).add(phone.group.position);
+      disc.group.position.copy(attached);
+
+      var intensity = smoothstep(0.1, 0.7, p);
+      shield.mat.uniforms.uIntensity.value = intensity;
+      shield.group.rotation.y = t * 0.15;
+      shield.group.rotation.x = Math.sin(t * 0.2) * 0.1;
+      shield.group.scale.setScalar(1.0 + Math.sin(t * 1.2) * 0.04 * intensity);
+
+      s.renderer.render(s.scene, s.camera);
+    }
+    tick();
+  }
+
+  /* =================================================================
+   * SCENE: DISC ONLY (variety)
+   * ================================================================= */
+  function initSceneDiscOnly(block) {
+    var mount = block.querySelector("[data-pw-feature-canvas]");
+    if (!mount) return;
+    var darkBG = block.classList.contains("dark");
+    var s = makeScene(THREE, mount, { fov: 38, camZ: 4.0, camY: 0.0, darkBG: darkBG });
+    if (!s) return;
+    var disc = buildPureWaveDisc(THREE);
+    s.scene.add(disc.group);
+
+    var startTime = performance.now();
+    var visible = false;
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { visible = e.isIntersecting; });
+    }, { threshold: 0 }).observe(block);
+
+    function tick() {
+      requestAnimationFrame(tick);
+      if (!visible) return;
+      var t = (performance.now() - startTime) / 1000;
+      disc.holoMat.uniforms.uTime.value = t;
+      var p = getBlockProgress(block);
+      disc.group.rotation.x = lerp(-0.3, -0.8, p) + Math.sin(t * 0.4) * 0.03;
+      disc.group.rotation.y = lerp(0, Math.PI * 2, p);
+      disc.group.scale.setScalar(lerp(1.0, 0.7, p));
+      s.renderer.render(s.scene, s.camera);
+    }
+    tick();
+  }
+
+  function initScenes() {
     if (typeof THREE === "undefined") return;
     if (prefersReducedMotion) return;
-    if (isMobile && window.innerWidth < 500) return;
+    if (isMobile && window.innerWidth < 480) return;
 
-    var mounts = document.querySelectorAll("[data-pw-floating]");
-    if (!mounts.length) return;
-
-    mounts.forEach(function (mount) {
-      var s = makeDiscScene(THREE, mount, { fov: 32, camZ: 4.0, camY: 0.2 });
-      if (!s) return;
-
-      var spin = parseFloat(mount.getAttribute("data-spin") || "0.005");
-      var tilt = parseFloat(mount.getAttribute("data-tilt") || "-0.3");
-      s.disc.rotation.x = tilt;
-
-      var startTime = performance.now();
-      var visible = false;
-      new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) { visible = e.isIntersecting; });
-      }, { threshold: 0 }).observe(mount);
-
-      function tick() {
-        requestAnimationFrame(tick);
-        if (!visible) return;
-        var t = (performance.now() - startTime) / 1000;
-        if (s.holoMat) s.holoMat.uniforms.uTime.value = t;
-        s.disc.rotation.y += spin;
-        s.disc.position.y = Math.sin(t * 0.7) * 0.08;
-        s.renderer.render(s.scene, s.camera);
-      }
-      tick();
+    var blocks = document.querySelectorAll("[data-pw-scene]");
+    blocks.forEach(function (block) {
+      var scene = block.getAttribute("data-pw-scene");
+      if (scene === "apply") initSceneApply(block);
+      else if (scene === "emf") initSceneEMF(block);
+      else if (scene === "shield") initSceneShield(block);
+      else if (scene === "disc") initSceneDiscOnly(block);
     });
   }
 
-  /* =================================================================
-   * INIT
-   * ================================================================= */
+  /* ============== INIT ============== */
   function init() {
     initSmoothScroll();
     initScrollProgress();
@@ -792,13 +1033,10 @@
     initCounters();
     initParallaxImages();
     initBarFill();
-
-    // 3D scenes load once Three.js is ready
     function init3D(attempts) {
       if (typeof THREE !== "undefined") {
         initHero3D();
-        initFeaturePins();
-        initFloatingDiscs();
+        initScenes();
       } else if ((attempts || 0) < 100) {
         setTimeout(function () { init3D((attempts || 0) + 1); }, 60);
       }
