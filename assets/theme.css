@@ -669,14 +669,50 @@ h1.hero-title em {
   position: relative;
   width: 100%;
   height: 50vh;
-  min-height: 280px;
+  min-height: 320px;
   z-index: 1;
 }
 @media (min-width: 900px) {
-  .feature-3d { height: 80vh; min-height: 480px; order: 1; }
+  .feature-3d { height: 80vh; min-height: 520px; order: 1; }
   .feature-block.reverse .feature-3d { order: 2; }
 }
-.feature-3d canvas { width: 100% !important; height: 100% !important; display: block; }
+
+/* The phone photo sits beneath the 3D canvas — provides realism */
+.feature-3d-photo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  pointer-events: none;
+}
+.feature-3d-photo img {
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 30px 50px rgba(15, 16, 20, 0.18));
+  transition: transform 0.6s var(--ease);
+}
+.feature-3d-photo-dark img {
+  filter: drop-shadow(0 30px 50px rgba(0, 0, 0, 0.5));
+}
+
+/* The 3D canvas overlays the photo */
+.feature-3d-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.feature-3d-canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+/* Legacy: if a feature-3d itself is the canvas (no inner wrapper) */
+.feature-3d > canvas { width: 100% !important; height: 100% !important; display: block; position: relative; z-index: 2; }
 
 /* Subtle background ring behind 3D */
 .feature-3d::before {
@@ -1626,3 +1662,186 @@ footer {
  * Reduce padding on the very last section so footer hugs nicely
  * ================================================================ */
 .final-cta + footer { margin-top: 0; }
+
+/* ================================================================
+ * V5: New scroll-driven moments
+ * ================================================================ */
+
+/* ---- Header gets slimmer on scroll ---- */
+header.is-scrolled .nav { padding: 9px 0; }
+@media (min-width: 768px) { header.is-scrolled .nav { padding: 12px 0; } }
+header.is-scrolled { box-shadow: 0 1px 0 rgba(15, 16, 20, 0.04); }
+
+/* ---- Inline disc band (between How It Works and Offer) ---- */
+.inline-disc-band {
+  background: var(--bg-alt);
+  padding: 70px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+@media (min-width: 768px) { .inline-disc-band { padding: 100px 0; } }
+
+.inline-disc-band::before {
+  content: "";
+  position: absolute;
+  top: 50%; right: -10%;
+  width: 50%; height: 80%;
+  transform: translateY(-50%);
+  background: radial-gradient(circle, rgba(212, 166, 74, 0.18), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.inline-disc-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+@media (min-width: 900px) { .inline-disc-grid { grid-template-columns: 0.85fr 1fr; gap: 64px; } }
+
+.inline-disc-3d {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 360px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (min-width: 900px) { .inline-disc-3d { max-width: 420px; aspect-ratio: 1; margin: 0; } }
+.inline-disc-3d::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(212, 166, 74, 0.22), transparent 65%);
+  pointer-events: none;
+}
+.inline-disc-3d canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.inline-disc-copy { text-align: left; }
+
+.scroll-stat-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 28px;
+}
+@media (min-width: 768px) { .scroll-stat-row { gap: 28px; } }
+
+.scroll-stat {
+  position: relative;
+}
+.scroll-stat-num {
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
+}
+@media (min-width: 768px) { .scroll-stat-num { font-size: 36px; } }
+.scroll-stat-label {
+  font-size: 11.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+@media (min-width: 768px) { .scroll-stat-label { font-size: 12px; } }
+
+.stat-bar {
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(15, 16, 20, 0.08);
+  overflow: hidden;
+  position: relative;
+}
+.stat-bar-fill {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 0;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  border-radius: 999px;
+  transition: width 1.6s var(--ease);
+}
+
+/* ---- Marquee parallax — extra horizontal shift on scroll ---- */
+.marquee[data-marquee-scroll] .marquee-track {
+  transform: translateX(var(--marquee-offset, 0));
+  transition: transform 0.1s linear;
+}
+
+/* ---- Magnetic buttons (transition is set via inline transform) ---- */
+[data-magnetic] {
+  transition: transform 0.3s var(--ease), background 0.3s, box-shadow 0.3s;
+  will-change: transform;
+}
+
+/* ---- Final CTA: floating decorative disc ---- */
+.final-cta { position: relative; }
+.final-cta-disc {
+  position: absolute;
+  top: 50%;
+  right: 4%;
+  transform: translateY(-50%);
+  width: 18vw;
+  max-width: 220px;
+  min-width: 130px;
+  aspect-ratio: 1;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.7;
+}
+@media (max-width: 700px) {
+  .final-cta-disc {
+    position: relative;
+    inset: auto;
+    transform: none;
+    margin: 0 auto 20px;
+    width: 60vw;
+    max-width: 280px;
+    opacity: 1;
+  }
+}
+.final-cta-disc canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* ================================================================
+ * V5: Mobile improvements — make 3D scenes work at smaller widths
+ * ================================================================ */
+@media (max-width: 900px) {
+  /* On mobile, stack the 3D and text without flex order issues */
+  .feature-pin {
+    grid-template-columns: 1fr;
+    padding: 60px 18px 40px;
+    gap: 24px;
+    align-content: start;
+  }
+  .feature-3d, .feature-block.reverse .feature-3d { order: 0; }
+  .feature-text, .feature-block.reverse .feature-text { order: 1; }
+  .feature-block { height: 180vh; }
+  .feature-3d { height: 42vh; min-height: 280px; }
+  .feature-text-title { font-size: clamp(24px, 7vw, 36px); }
+  .feature-text-sub { font-size: 14.5px; line-height: 1.55; }
+  .feature-stat-num { font-size: 32px; }
+}
+@media (max-width: 600px) {
+  .feature-block { height: 170vh; }
+  .feature-3d { height: 38vh; min-height: 260px; }
+  .feature-pin { padding: 50px 16px 32px; gap: 18px; }
+}

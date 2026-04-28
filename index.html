@@ -68,7 +68,7 @@
       </div>
 
       <div class="hero-cta-row">
-        <a href="#buy" class="btn-primary">
+        <a href="#buy" class="btn-primary" data-magnetic>
           Yes, I Want PureWave — 50% Off <span class="arr">&rarr;</span>
         </a>
         <a href="#how" class="btn-ghost">Show me how it works</a>
@@ -125,7 +125,7 @@
 </section>
 
 <!-- ============ MARQUEE BAND #1 ============ -->
-<div class="marquee" aria-hidden="true">
+<div class="marquee" aria-hidden="true" data-marquee-scroll>
   <div class="marquee-track">
     <span>Made for devices.</span>
     <span>Built for life.</span>
@@ -185,10 +185,15 @@
   </div>
 </section>
 
-<!-- ============ FEATURE BLOCK 1 — APPLY: phone rotates, disc snaps onto back ============ -->
+<!-- ============ FEATURE BLOCK 1 — APPLY: disc flies in onto a real phone photo ============ -->
 <section class="feature-block" data-pw-scene="apply">
   <div class="feature-pin">
-    <div class="feature-3d" data-pw-feature-canvas></div>
+    <div class="feature-3d">
+      <div class="feature-3d-photo">
+        <img src="assets/phone-floating.png" alt="" aria-hidden="true">
+      </div>
+      <div class="feature-3d-canvas" data-pw-feature-canvas></div>
+    </div>
     <div class="feature-text">
       <span class="feature-text-eyebrow">01 — Apply</span>
       <h2 class="feature-text-title" data-split-text>
@@ -204,7 +209,7 @@
         </div>
         <div style="flex:1; min-width: 140px;">
           <div class="feature-bar"><div class="feature-bar-fill"></div></div>
-          <div style="font-size:11px; color:var(--muted); margin-top:6px; letter-spacing:0.05em; text-transform:uppercase; font-weight:600;">Setup complexity → none</div>
+          <div style="font-size:11px; color:var(--muted); margin-top:6px; letter-spacing:0.05em; text-transform:uppercase; font-weight:600;">Setup complexity &rarr; none</div>
         </div>
       </div>
     </div>
@@ -214,14 +219,19 @@
 <!-- ============ FEATURE BLOCK 2 — EMF CHAOS → CALM (DARK, the dramatic moment) ============ -->
 <section class="feature-block dark reverse" data-pw-scene="emf">
   <div class="feature-pin">
-    <div class="feature-3d" data-pw-feature-canvas></div>
+    <div class="feature-3d">
+      <div class="feature-3d-photo feature-3d-photo-dark">
+        <img src="assets/phone-closeup.png" alt="" aria-hidden="true">
+      </div>
+      <div class="feature-3d-canvas" data-pw-feature-canvas></div>
+    </div>
     <div class="feature-text">
       <span class="feature-text-eyebrow">02 — Neutralize</span>
       <h2 class="feature-text-title" data-split-text>
         From chaos<br><em>to calm.</em>
       </h2>
       <p class="feature-text-sub">
-        EMF is everywhere — radiating from your phone, your laptop, your Wi-Fi, every device you own. PureWave's nano-ion technology uses passive silicone resonance to harmonize the field around your device, transforming chaotic signal into a calm, balanced wave pattern.
+        EMF is everywhere &mdash; radiating from your phone, your laptop, your Wi-Fi, every device you own. PureWave's nano-ion technology uses passive silicone resonance to harmonize the field around your device, transforming chaotic signal into a calm, balanced wave pattern.
       </p>
       <div class="feature-stat" data-bar-fill="98%">
         <div>
@@ -237,17 +247,22 @@
   </div>
 </section>
 
-<!-- ============ FEATURE BLOCK 3 — SHIELD FIELD: phone with active field ============ -->
+<!-- ============ FEATURE BLOCK 3 — SHIELD FIELD: photo + breathing point sphere ============ -->
 <section class="feature-block alt" data-pw-scene="shield">
   <div class="feature-pin">
-    <div class="feature-3d" data-pw-feature-canvas></div>
+    <div class="feature-3d">
+      <div class="feature-3d-photo">
+        <img src="assets/phone-floating.png" alt="" aria-hidden="true">
+      </div>
+      <div class="feature-3d-canvas" data-pw-feature-canvas></div>
+    </div>
     <div class="feature-text">
       <span class="feature-text-eyebrow">03 — Always On</span>
       <h2 class="feature-text-title" data-split-text>
         A quiet field<br><em>around every device.</em>
       </h2>
       <p class="feature-text-sub">
-        Once applied, PureWave is always active. No batteries. No charging. No maintenance. The disc creates a passive nano-ion field that surrounds your device — at work, at home, while you sleep — for the entire life of the phone.
+        Once applied, PureWave is always active. No batteries. No charging. No maintenance. The disc creates a passive nano-ion field that surrounds your device &mdash; at work, at home, while you sleep &mdash; for the entire life of the phone.
       </p>
       <div class="feature-stat" data-bar-fill="100%">
         <div>
@@ -264,7 +279,7 @@
 </section>
 
 <!-- ============ MARQUEE BAND #2 (gold) ============ -->
-<div class="marquee gold-marquee" aria-hidden="true">
+<div class="marquee gold-marquee" aria-hidden="true" data-marquee-scroll>
   <div class="marquee-track">
     <span>Apply once.</span>
     <span>Last forever.</span>
@@ -385,6 +400,47 @@
   </div>
 </section>
 
+<!-- ============ INLINE FLOATING DISC + SCROLL STATS BAND ============ -->
+<section class="inline-disc-band">
+  <div class="wrap">
+    <div class="inline-disc-grid">
+      <div class="inline-disc-3d" data-pw-floating data-spin="0.006" data-tilt="-0.4"></div>
+      <div class="inline-disc-copy">
+        <span class="section-eyebrow">By The Numbers</span>
+        <h2 class="section-title" data-split-text>
+          A small disc.<br><em>Big numbers.</em>
+        </h2>
+        <p class="section-sub" style="font-size:15px;">
+          PureWave's nano-ion silicone has been independently lab-tested. Here's how the field around your device transforms within seconds of application.
+        </p>
+
+        <div class="scroll-stat-row">
+          <div class="scroll-stat" data-scroll-stat="98%">
+            <div class="scroll-stat-num"><span data-counter="98" data-suffix="%">98%</span></div>
+            <div class="scroll-stat-label">Field harmonization</div>
+            <div class="stat-bar"><div class="stat-bar-fill"></div></div>
+          </div>
+          <div class="scroll-stat" data-scroll-stat="100%">
+            <div class="scroll-stat-num"><span data-counter="0" data-suffix="%">0%</span></div>
+            <div class="scroll-stat-label">Signal interference</div>
+            <div class="stat-bar"><div class="stat-bar-fill" style="background: linear-gradient(90deg, #1d6b3f, #4ec077);"></div></div>
+          </div>
+          <div class="scroll-stat" data-scroll-stat="92%">
+            <div class="scroll-stat-num"><span data-counter="47" data-suffix="K+">47K+</span></div>
+            <div class="scroll-stat-label">Verified users</div>
+            <div class="stat-bar"><div class="stat-bar-fill"></div></div>
+          </div>
+          <div class="scroll-stat" data-scroll-stat="100%">
+            <div class="scroll-stat-num"><span data-counter="24" data-suffix="/7">24/7</span></div>
+            <div class="scroll-stat-label">Always-on coverage</div>
+            <div class="stat-bar"><div class="stat-bar-fill"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ OFFER / BUY BOX ============ -->
 <section class="section offer" id="buy">
   <div class="wrap offer-wrap">
@@ -461,7 +517,7 @@
             data-variant-2="47734230319291"
             data-variant-3="47734230352059">
           <input type="hidden" name="quantity" value="1">
-          <button type="submit" class="btn-huge">
+          <button type="submit" class="btn-huge" data-magnetic>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
@@ -553,6 +609,18 @@
     </div>
   </div>
 </section>
+
+<!-- ============ MARQUEE BAND #3 — before reviews ============ -->
+<div class="marquee" aria-hidden="true" data-marquee-scroll>
+  <div class="marquee-track">
+    <span>47,000+ devices.</span>
+    <span>3,214 reviews.</span>
+    <span>4.7 stars.</span>
+    <span>47,000+ devices.</span>
+    <span>3,214 reviews.</span>
+    <span>4.7 stars.</span>
+  </div>
+</div>
 
 <!-- ============ REVIEWS ============ -->
 <section class="section reviews" id="reviews">
@@ -731,15 +799,28 @@
   </div>
 </section>
 
+<!-- ============ MARQUEE BAND #4 (gold) — before final CTA ============ -->
+<div class="marquee gold-marquee" aria-hidden="true" data-marquee-scroll>
+  <div class="marquee-track">
+    <span>Stop overthinking it.</span>
+    <span>Just press apply.</span>
+    <span>Stop overthinking it.</span>
+    <span>Just press apply.</span>
+    <span>Stop overthinking it.</span>
+    <span>Just press apply.</span>
+  </div>
+</div>
+
 <!-- ============ FINAL CTA ============ -->
 <section class="final-cta">
+  <div class="final-cta-disc" data-pw-floating data-spin="0.012" data-tilt="-0.5"></div>
   <div class="wrap">
     <span class="section-eyebrow">The Only Question Left</span>
     <h2 class="section-title" data-split-text>
       What are you<br><em>waiting for?</em>
     </h2>
     <p class="section-sub">Tens of thousands of customers didn't overthink it. They ordered, applied it in 10 seconds, and got on with their lives. You're covered by a 30-day money-back guarantee. There's no downside to trying.</p>
-    <a href="#buy" class="btn-primary">Claim My 50% Off Now <span class="arr">&rarr;</span></a>
+    <a href="#buy" class="btn-primary" data-magnetic>Claim My 50% Off Now <span class="arr">&rarr;</span></a>
     <p class="final-sub-note">🔒 Secure checkout · Ships within 48 hours · Free returns</p>
   </div>
 </section>

@@ -1,21 +1,31 @@
 /* =================================================================
- * PUREWAVE — v4 site logic
- * Narrative 3D scenes: phone+disc apply, EMF chaos→calm, shield field.
+ * PUREWAVE — v5 site logic
+ * Photo-backed 3D scenes (real product photos as backdrop, 3D disc
+ * + EMF/shield overlays). Scroll moments throughout the page.
+ * Mobile-friendly with reduced DPR.
  * ================================================================= */
 (function () {
   "use strict";
 
+  /* ---------- env detection ---------- */
   var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var isTouch = window.matchMedia("(hover: none)").matches;
   var isMobile = window.innerWidth < 700;
+  var isTinyMobile = window.innerWidth < 360;
+  // DPR cap — lower on mobile to save battery, but still high enough to look sharp
+  var DPR_CAP = isMobile ? 1.5 : 2.0;
 
+  /* ---------- math helpers ---------- */
   function lerp(a, b, t) { return a + (b - a) * t; }
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
   function easeInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
   function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+  function easeInCubic(t) { return t * t * t; }
   function smoothstep(a, b, t) { var x = clamp((t - a) / (b - a), 0, 1); return x * x * (3 - 2 * x); }
 
-  /* ============== SMOOTH SCROLL ============== */
+  /* =================================================================
+   * SMOOTH SCROLL
+   * ================================================================= */
   function initSmoothScroll() {
     if (isTouch || prefersReducedMotion) {
       window.__pwSmoothY = window.scrollY;
@@ -39,7 +49,9 @@
     window.__pwSmoothY = window.scrollY;
   }
 
-  /* ============== PROGRESS BAR ============== */
+  /* =================================================================
+   * SCROLL PROGRESS BAR
+   * ================================================================= */
   function initScrollProgress() {
     var bar = document.querySelector("[data-scroll-progress]");
     if (!bar) return;
@@ -55,7 +67,9 @@
     update();
   }
 
-  /* ============== SCROLL REVEAL ============== */
+  /* =================================================================
+   * SCROLL REVEAL — wider coverage now
+   * ================================================================= */
   function initScrollReveal() {
     var tagMap = [
       [".problem-card", "reveal-up", 100],
@@ -67,13 +81,16 @@
       [".compare-row:not(.head)", "reveal-up", 40],
       [".faq-item", "reveal-up", 40],
       [".og-item", "reveal-up", 60],
-      [".rs-item", "reveal-up", 80]
+      [".rs-item", "reveal-up", 80],
+      [".section-eyebrow", "reveal-up", 0],
+      [".pay-badge", "reveal-scale", 50],
+      [".footer-col", "reveal-up", 100]
     ];
     tagMap.forEach(function (entry) {
       var sel = entry[0], cls = entry[1], stagger = entry[2];
       document.querySelectorAll(sel).forEach(function (el, i) {
         el.classList.add(cls);
-        el.style.transitionDelay = (i * stagger) + "ms";
+        if (stagger) el.style.transitionDelay = (i * stagger) + "ms";
       });
     });
     if (!("IntersectionObserver" in window)) {
@@ -88,7 +105,9 @@
     document.querySelectorAll(".reveal-up, .reveal-left, .reveal-scale").forEach(function (el) { io.observe(el); });
   }
 
-  /* ============== SPLIT TEXT ============== */
+  /* =================================================================
+   * SPLIT TEXT
+   * ================================================================= */
   function initSplitText() {
     if (prefersReducedMotion) return;
     var els = document.querySelectorAll("[data-split-text]");
@@ -118,7 +137,9 @@
     els.forEach(function (el) { io.observe(el); });
   }
 
-  /* ============== COUNTDOWN ============== */
+  /* =================================================================
+   * COUNTDOWN
+   * ================================================================= */
   function initCountdown() {
     var bar = document.querySelector("[data-countdown]");
     if (!bar) return;
@@ -145,11 +166,13 @@
     setInterval(tick, 1000);
   }
 
-  /* ============== BUNDLE SELECTOR ============== */
+  /* =================================================================
+   * BUNDLE SELECTOR
+   * ================================================================= */
   var BUNDLES = {
-    "1": { qty: "6×",  label: "Starter Pack",   now: 59,  was: 118 },
-    "2": { qty: "12×", label: "Household Pack", now: 89,  was: 178 },
-    "3": { qty: "18×", label: "Family Pack",    now: 119, was: 238 }
+    "1": { qty: "6×", label: "Starter Pack", now: 59, was: 118 },
+    "2": { qty: "12×", label: "Household Pack", now: 89, was: 178 },
+    "3": { qty: "18×", label: "Family Pack", now: 119, was: 238 }
   };
   function initBundleSelector() {
     var cards = document.querySelectorAll("[data-bundle]");
@@ -185,7 +208,9 @@
     select("2");
   }
 
-  /* ============== STICKY CART ============== */
+  /* =================================================================
+   * STICKY CART
+   * ================================================================= */
   function initStickyCart() {
     var bar = document.querySelector("[data-sticky-cart]");
     if (!bar) return;
@@ -194,7 +219,9 @@
     onScroll();
   }
 
-  /* ============== LIVE NOTIFICATIONS ============== */
+  /* =================================================================
+   * LIVE NOTIFICATIONS
+   * ================================================================= */
   var purchases = [
     { name: "Sarah", city: "Austin, TX", product: "Household Pack", time: "12 min ago" },
     { name: "Michael", city: "Chicago, IL", product: "Family Pack", time: "8 min ago" },
@@ -224,7 +251,9 @@
     setTimeout(function () { show(); setInterval(show, 14000); }, 7000);
   }
 
-  /* ============== COUNTERS ============== */
+  /* =================================================================
+   * COUNTERS — animate numbers when in view
+   * ================================================================= */
   function initCounters() {
     var els = document.querySelectorAll("[data-counter]");
     if (!els.length || !("IntersectionObserver" in window)) return;
@@ -256,7 +285,9 @@
     els.forEach(function (el) { io.observe(el); });
   }
 
-  /* ============== PARALLAX ============== */
+  /* =================================================================
+   * PARALLAX IMAGES
+   * ================================================================= */
   function initParallaxImages() {
     if (prefersReducedMotion) return;
     var wraps = document.querySelectorAll("[data-parallax-image]");
@@ -266,7 +297,8 @@
       var img = wrap.querySelector("img");
       if (!img) return;
       img.style.transform = "translate3d(0,0,0) scale(1.1)";
-      items.push({ wrap: wrap, img: img });
+      var strength = parseFloat(wrap.getAttribute("data-parallax-strength") || "28");
+      items.push({ wrap: wrap, img: img, strength: strength });
     });
     var raf = null;
     function update() {
@@ -276,7 +308,7 @@
         if (rect.bottom < 0 || rect.top > vh) return;
         var center = rect.top + rect.height / 2;
         var p = (center - vh / 2) / vh;
-        var y = clamp(p * -28, -50, 50);
+        var y = clamp(p * -it.strength, -60, 60);
         it.img.style.transform = "translate3d(0," + y.toFixed(1) + "px,0) scale(1.1)";
       });
       raf = null;
@@ -285,7 +317,9 @@
     update();
   }
 
-  /* ============== BAR FILL ============== */
+  /* =================================================================
+   * BAR FILL
+   * ================================================================= */
   function initBarFill() {
     var els = document.querySelectorAll("[data-bar-fill]");
     if (!els.length || !("IntersectionObserver" in window)) return;
@@ -303,7 +337,101 @@
   }
 
   /* =================================================================
-   * THREE.JS — DISC, PHONE, EMF WAVES, SHIELD FIELD
+   * MARQUEE PARALLAX — horizontal track shifts based on scroll
+   * Adds dynamic life to the marquee bands
+   * ================================================================= */
+  function initMarqueeParallax() {
+    if (prefersReducedMotion) return;
+    var marquees = document.querySelectorAll("[data-marquee-scroll]");
+    if (!marquees.length) return;
+    var raf = null;
+    function update() {
+      var vh = window.innerHeight;
+      marquees.forEach(function (m) {
+        var rect = m.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > vh) return;
+        // Shift extra based on viewport progress
+        var p = 1 - rect.top / vh;
+        var track = m.querySelector(".marquee-track");
+        if (!track) return;
+        // Apply an additional translate via a CSS variable
+        m.style.setProperty("--marquee-offset", (p * -60).toFixed(0) + "px");
+      });
+      raf = null;
+    }
+    window.addEventListener("scroll", function () { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+    update();
+  }
+
+  /* =================================================================
+   * SCROLL-TIED CARD TILT — cards tilt slightly based on scroll position
+   * Subtle, gives the feed a feeling of motion
+   * ================================================================= */
+  function initScrollTilt() {
+    if (prefersReducedMotion || isMobile) return;
+    var cards = document.querySelectorAll("[data-scroll-tilt]");
+    if (!cards.length) return;
+    var raf = null;
+    function update() {
+      var vh = window.innerHeight;
+      cards.forEach(function (card) {
+        var rect = card.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > vh) return;
+        var center = rect.top + rect.height / 2;
+        var p = (center - vh / 2) / (vh / 2);
+        var rotX = clamp(p * 4, -8, 8);
+        card.style.transform = "perspective(900px) rotateX(" + (-rotX).toFixed(2) + "deg)";
+      });
+      raf = null;
+    }
+    window.addEventListener("scroll", function () { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+    update();
+  }
+
+  /* =================================================================
+   * SCROLL-DRIVEN STAT BARS — review stat bars fill based on scroll
+   * ================================================================= */
+  function initScrollStats() {
+    if (!("IntersectionObserver" in window)) return;
+    var bars = document.querySelectorAll("[data-scroll-stat]");
+    if (!bars.length) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          var fill = e.target.getAttribute("data-scroll-stat") || "85%";
+          var inner = e.target.querySelector(".stat-bar-fill");
+          if (inner) {
+            // Slightly delayed for a satisfying load
+            setTimeout(function () { inner.style.width = fill; }, 200);
+          }
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    bars.forEach(function (b) { io.observe(b); });
+  }
+
+  /* =================================================================
+   * MAGNETIC BUTTONS — small mouse-follow effect
+   * ================================================================= */
+  function initMagneticButtons() {
+    if (prefersReducedMotion || isTouch) return;
+    var els = document.querySelectorAll("[data-magnetic]");
+    els.forEach(function (el) {
+      el.addEventListener("mousemove", function (e) {
+        var r = el.getBoundingClientRect();
+        var dx = (e.clientX - (r.left + r.width / 2)) * 0.18;
+        var dy = (e.clientY - (r.top + r.height / 2)) * 0.18;
+        el.style.transform = "translate(" + dx + "px, " + dy + "px)";
+      });
+      el.addEventListener("mouseleave", function () {
+        el.style.transform = "translate(0, 0)";
+      });
+    });
+  }
+
+  /* =================================================================
+   * THREE.JS — DISC, EMF WAVES, SHIELD FIELD (no procedural phone)
    * ================================================================= */
 
   function buildPureWaveDisc(THREE) {
@@ -402,99 +530,6 @@
     disc.add(rimBot);
 
     return { group: disc, holoMat: holoMat };
-  }
-
-  function buildPhone3D(THREE) {
-    var phone = new THREE.Group();
-    var w = 1.7, h = 3.4, d = 0.16;
-    var cornerR = 0.22;
-
-    function roundedShape(width, height, radius) {
-      var shape = new THREE.Shape();
-      var x0 = -width / 2, y0 = -height / 2, x1 = width / 2, y1 = height / 2;
-      shape.moveTo(x0 + radius, y0);
-      shape.lineTo(x1 - radius, y0);
-      shape.quadraticCurveTo(x1, y0, x1, y0 + radius);
-      shape.lineTo(x1, y1 - radius);
-      shape.quadraticCurveTo(x1, y1, x1 - radius, y1);
-      shape.lineTo(x0 + radius, y1);
-      shape.quadraticCurveTo(x0, y1, x0, y1 - radius);
-      shape.lineTo(x0, y0 + radius);
-      shape.quadraticCurveTo(x0, y0, x0 + radius, y0);
-      return shape;
-    }
-
-    var bodyGeo = new THREE.ExtrudeGeometry(roundedShape(w, h, cornerR), {
-      depth: d, bevelEnabled: true, bevelSize: 0.018, bevelThickness: 0.018, bevelSegments: 4, curveSegments: 18
-    });
-    bodyGeo.center();
-    var bodyMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1f, roughness: 0.32, metalness: 0.78 });
-    phone.add(new THREE.Mesh(bodyGeo, bodyMat));
-
-    var screenW = w - 0.14, screenH = h - 0.18;
-    var screenGeo = new THREE.ExtrudeGeometry(roundedShape(screenW, screenH, cornerR - 0.04), {
-      depth: 0.005, bevelEnabled: false, curveSegments: 16
-    });
-    screenGeo.center();
-    var screenMat = new THREE.MeshStandardMaterial({
-      color: 0x080a14, roughness: 0.05, metalness: 0.55,
-      emissive: 0x0a1a3a, emissiveIntensity: 0.25
-    });
-    var screen = new THREE.Mesh(screenGeo, screenMat);
-    screen.position.z = d / 2 + 0.005;
-    phone.add(screen);
-
-    var islandGeo = new THREE.ExtrudeGeometry(roundedShape(0.6, 0.18, 0.09), { depth: 0.004, bevelEnabled: false, curveSegments: 12 });
-    islandGeo.center();
-    var islandMat = new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.2, metalness: 0.4 });
-    var island = new THREE.Mesh(islandGeo, islandMat);
-    island.position.set(0, screenH / 2 - 0.22, d / 2 + 0.012);
-    phone.add(island);
-
-    // Camera bump on back
-    var camBumpGeo = new THREE.BoxGeometry(0.7, 0.7, 0.06);
-    var camBumpMat = new THREE.MeshStandardMaterial({ color: 0x14141a, roughness: 0.4, metalness: 0.8 });
-    var camBump = new THREE.Mesh(camBumpGeo, camBumpMat);
-    camBump.position.set(-w / 2 + 0.55, h / 2 - 0.55, -d / 2 - 0.03);
-    phone.add(camBump);
-
-    var lensRingGeo = new THREE.TorusGeometry(0.13, 0.024, 12, 32);
-    var lensRingMat = new THREE.MeshStandardMaterial({ color: 0x2a2a30, roughness: 0.3, metalness: 0.85 });
-    var lensGlassGeo = new THREE.CircleGeometry(0.11, 24);
-    var lensGlassMat = new THREE.MeshStandardMaterial({
-      color: 0x05050a, roughness: 0.1, metalness: 0.5,
-      emissive: 0x081530, emissiveIntensity: 0.4
-    });
-
-    var lens1Ring = new THREE.Mesh(lensRingGeo, lensRingMat);
-    lens1Ring.position.set(camBump.position.x - 0.13, camBump.position.y + 0.13, camBump.position.z - 0.04);
-    phone.add(lens1Ring);
-    var lens1Glass = new THREE.Mesh(lensGlassGeo, lensGlassMat);
-    lens1Glass.position.copy(lens1Ring.position);
-    lens1Glass.position.z -= 0.005;
-    lens1Glass.rotation.y = Math.PI;
-    phone.add(lens1Glass);
-
-    var lens2Ring = new THREE.Mesh(lensRingGeo, lensRingMat);
-    lens2Ring.position.set(camBump.position.x + 0.13, camBump.position.y - 0.13, camBump.position.z - 0.04);
-    phone.add(lens2Ring);
-    var lens2Glass = new THREE.Mesh(lensGlassGeo, lensGlassMat);
-    lens2Glass.position.copy(lens2Ring.position);
-    lens2Glass.position.z -= 0.005;
-    lens2Glass.rotation.y = Math.PI;
-    phone.add(lens2Glass);
-
-    // Subtle glow plane on screen
-    var glowGeo = new THREE.PlaneGeometry(screenW * 0.92, screenH * 0.94);
-    var glowMat = new THREE.MeshBasicMaterial({
-      color: 0x4a78ff, transparent: true, opacity: 0.08,
-      blending: THREE.AdditiveBlending, depthWrite: false
-    });
-    var glow = new THREE.Mesh(glowGeo, glowMat);
-    glow.position.z = d / 2 + 0.012;
-    phone.add(glow);
-
-    return { group: phone, screen: screen, glow: glow };
   }
 
   function buildEMFWaves(THREE) {
@@ -643,7 +678,7 @@
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
     } catch (err) { return null; }
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, DPR_CAP));
     renderer.setSize(width, height);
     renderer.setClearColor(0x000000, 0);
     if (THREE.sRGBEncoding) renderer.outputEncoding = THREE.sRGBEncoding;
@@ -755,25 +790,26 @@
   }
 
   /* =================================================================
-   * SCENE: PHONE + DISC APPLICATION
+   * SCENE: APPLY — disc flies in and lands on photo backdrop
+   * The photo IS the phone. 3D disc enters from upper-right, descends
+   * along a curve, and settles to the spot where the disc would be on
+   * the phone in the photo.
    * ================================================================= */
   function initSceneApply(block) {
     var mount = block.querySelector("[data-pw-feature-canvas]");
     if (!mount) return;
     var darkBG = block.classList.contains("dark");
-    var s = makeScene(THREE, mount, { fov: 36, camZ: 5.5, camY: 0.0, darkBG: darkBG });
+    var s = makeScene(THREE, mount, { fov: 36, camZ: 5.0, camY: 0.0, darkBG: darkBG });
     if (!s) return;
-
-    var phone = buildPhone3D(THREE);
-    s.scene.add(phone.group);
 
     var disc = buildPureWaveDisc(THREE);
     s.scene.add(disc.group);
 
-    // Glowing target ring on phone back
-    var targetRingGeo = new THREE.TorusGeometry(0.55, 0.012, 8, 64);
+    // Glowing target ring marker — appears mid-scroll
+    var targetRingGeo = new THREE.TorusGeometry(0.6, 0.012, 8, 64);
     var targetRingMat = new THREE.MeshBasicMaterial({ color: 0xffd770, transparent: true, opacity: 0 });
     var targetRing = new THREE.Mesh(targetRingGeo, targetRingMat);
+    targetRing.rotation.x = Math.PI / 2;
     s.scene.add(targetRing);
 
     var startTime = performance.now();
@@ -790,48 +826,34 @@
 
       var p = getBlockProgress(block);
 
-      // Phone — front to back via Y rotation
-      var phoneRotY = lerp(0, Math.PI, easeInOutCubic(p)) + Math.sin(t * 0.6) * 0.04;
-      var phoneRotX = lerp(-0.15, 0.05, p) + Math.sin(t * 0.4) * 0.02;
-      phone.group.rotation.y = phoneRotY;
-      phone.group.rotation.x = phoneRotX;
-      phone.group.position.y = Math.sin(t * 0.8) * 0.04;
+      // Disc trajectory: upper-right → curve down → land at target spot
+      // Target = where the disc visually sits on the phone in the photo
+      // Photo's disc is roughly center-of-frame, so target ≈ (0, 0.0)
+      var startX = 2.6, startY = 1.8, startZ = 0.6;
+      var endX = 0.0, endY = -0.1, endZ = 0.0;
 
-      // Disc — sweep in from upper right, settle to center on phone back
-      var discStart = new THREE.Vector3(2.4, 0.6, 0.5);
-      var discMid   = new THREE.Vector3(1.2, 0.0, -0.2);
-      var attachLocal = new THREE.Vector3(0, 0.6, -0.085 - 0.045);
+      // Quadratic-ish bezier through a control point for arc
+      var ctrlX = 1.6, ctrlY = 0.8, ctrlZ = -0.2;
+      var ep = easeInOutCubic(p);
+      var inv = 1 - ep;
+      var dx = inv * inv * startX + 2 * inv * ep * ctrlX + ep * ep * endX;
+      var dy = inv * inv * startY + 2 * inv * ep * ctrlY + ep * ep * endY;
+      var dz = inv * inv * startZ + 2 * inv * ep * ctrlZ + ep * ep * endZ;
+      disc.group.position.set(dx, dy, dz);
 
-      if (p < 0.45) {
-        var k = smoothstep(0, 0.45, p);
-        disc.group.position.lerpVectors(discStart, discMid, k);
-        disc.group.rotation.x = lerp(-1.4, -1.2, k);
-        disc.group.rotation.y = lerp(0.4, 0.5, k) + Math.sin(t * 0.5) * 0.05;
-        disc.group.rotation.z = lerp(0.3, 0.0, k);
-      } else if (p < 0.75) {
-        var k2 = smoothstep(0.45, 0.75, p);
-        var endPos = attachLocal.clone().applyEuler(phone.group.rotation).add(phone.group.position);
-        disc.group.position.lerpVectors(discMid, endPos, k2);
-        disc.group.rotation.x = lerp(-1.2, -Math.PI / 2, k2);
-        disc.group.rotation.y = lerp(0.5, 0, k2);
-        disc.group.rotation.z = 0;
-      } else {
-        // Attached: ride the phone
-        var qPhone = phone.group.quaternion.clone();
-        var qFlat = new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0));
-        disc.group.quaternion.copy(qPhone).multiply(qFlat);
-        var attached = attachLocal.clone().applyEuler(phone.group.rotation).add(phone.group.position);
-        disc.group.position.copy(attached);
-      }
+      // Disc rotates from edge-on (rotation.x = -PI/2 + small angle) toward face-on (-PI/2)
+      // Actually: starts tumbling, ends flat
+      disc.group.rotation.x = lerp(-1.4, -Math.PI / 2, easeInOutCubic(p));
+      disc.group.rotation.y = lerp(0.5, 0.0, easeInOutCubic(p)) + (1 - p) * t * 0.8;
+      disc.group.rotation.z = lerp(0.4, 0.0, easeInOutCubic(p));
 
-      var scale = lerp(0.85, 0.55, p);
+      var scale = lerp(0.6, 0.45, p);
       disc.group.scale.setScalar(scale);
 
-      // Target ring — visible during landing approach, fades by end
-      targetRing.material.opacity = (smoothstep(0.4, 0.6, p) - smoothstep(0.7, 0.88, p)) * 0.65;
-      var ringPos = new THREE.Vector3(0, 0.6, -0.09).applyEuler(phone.group.rotation).add(phone.group.position);
-      targetRing.position.copy(ringPos);
-      targetRing.quaternion.copy(phone.group.quaternion).multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0)));
+      // Target ring fades in around p=0.3..0.6, fades out at p=0.85
+      targetRing.material.opacity = (smoothstep(0.3, 0.55, p) - smoothstep(0.78, 0.92, p)) * 0.7;
+      targetRing.position.set(0, -0.1, 0);
+      targetRing.scale.setScalar(0.5 + Math.sin(t * 2.5) * 0.05);
 
       s.renderer.render(s.scene, s.camera);
     }
@@ -839,7 +861,7 @@
   }
 
   /* =================================================================
-   * SCENE: EMF CHAOS → CALM
+   * SCENE: EMF CHAOS → CALM — rings around a phone photo backdrop
    * ================================================================= */
   function initSceneEMF(block) {
     var mount = block.querySelector("[data-pw-feature-canvas]");
@@ -848,19 +870,13 @@
     var s = makeScene(THREE, mount, { fov: 40, camZ: 5.0, camY: 0.0, darkBG: darkBG });
     if (!s) return;
 
-    var phone = buildPhone3D(THREE);
-    phone.group.rotation.y = -0.25;
-    phone.group.rotation.x = -0.05;
-    s.scene.add(phone.group);
-
-    var disc = buildPureWaveDisc(THREE);
-    disc.group.position.set(0, 3.5, -0.5);
-    disc.group.rotation.x = -Math.PI / 2;
-    disc.group.scale.setScalar(0);
-    s.scene.add(disc.group);
-
     var emf = buildEMFWaves(THREE);
     s.scene.add(emf.group);
+
+    // Decorative orbiting disc
+    var disc = buildPureWaveDisc(THREE);
+    disc.group.scale.setScalar(0.35);
+    s.scene.add(disc.group);
 
     var startTime = performance.now();
     var visible = false;
@@ -879,34 +895,22 @@
       var chaos = lerp(1.0, 0.0, easeInOutCubic(p));
       emf.mat.uniforms.uChaos.value = chaos;
 
-      phone.group.rotation.y = -0.25 + Math.sin(t * 0.6) * 0.06;
-      phone.group.rotation.x = -0.05 + Math.cos(t * 0.5) * 0.04;
-      phone.group.position.y = Math.sin(t * 0.9) * 0.05;
+      // Disc descends from above the frame, then orbits around center
+      var discAppear = smoothstep(0.2, 0.6, p);
+      disc.group.scale.setScalar(discAppear * 0.4);
+      var discY = lerp(2.2, 0.0, easeInOutCubic(p));
+      var orbitAngle = (p - 0.5) * Math.PI * 2 + t * 0.3;
+      var orbitR = lerp(0.0, 1.4, smoothstep(0.6, 1.0, p));
+      var discX = Math.cos(orbitAngle) * orbitR;
+      var discZ = Math.sin(orbitAngle) * orbitR * 0.6;
+      disc.group.position.set(discX, discY, discZ);
+      disc.group.rotation.x = -Math.PI / 2 + Math.sin(t * 0.7) * 0.1;
+      disc.group.rotation.z = t * 0.4;
 
-      var discAppear = smoothstep(0.3, 0.7, p);
-      disc.group.scale.setScalar(discAppear * 0.7);
-      var discY = lerp(3.5, 0.4, easeInOutCubic(p));
-      var discZ = lerp(-0.5, -0.18, easeInOutCubic(p));
-      disc.group.position.set(0, discY, discZ);
-
-      if (p > 0.85) {
-        var qPhone = phone.group.quaternion.clone();
-        var qFlat = new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0));
-        disc.group.quaternion.copy(qPhone).multiply(qFlat);
-        var attached = new THREE.Vector3(0, 0.4, -0.09).applyEuler(phone.group.rotation).add(phone.group.position);
-        disc.group.position.copy(attached);
-      } else {
-        disc.group.rotation.x = -Math.PI / 2 + Math.sin(t * 0.5) * 0.05;
-        disc.group.rotation.z = t * 0.6;
-      }
-
+      // EMF wave field tilts and pulses
       emf.group.rotation.y = t * 0.15;
-      emf.group.scale.setScalar(lerp(1.0, 1.4, smoothstep(0.6, 1.0, p)));
-
-      if (phone.glow && phone.glow.material) {
-        phone.glow.material.opacity = lerp(0.05, 0.18, 1 - chaos);
-        phone.glow.material.color.setHex(chaos > 0.5 ? 0xff6a3c : 0x6ec3ff);
-      }
+      emf.group.rotation.x = Math.sin(t * 0.3) * 0.08;
+      emf.group.scale.setScalar(lerp(1.0, 1.5, smoothstep(0.5, 1.0, p)));
 
       s.renderer.render(s.scene, s.camera);
     }
@@ -914,7 +918,7 @@
   }
 
   /* =================================================================
-   * SCENE: SHIELD FIELD
+   * SCENE: SHIELD FIELD — breathing point sphere around a photo
    * ================================================================= */
   function initSceneShield(block) {
     var mount = block.querySelector("[data-pw-feature-canvas]");
@@ -923,17 +927,14 @@
     var s = makeScene(THREE, mount, { fov: 38, camZ: 5.0, camY: 0.0, darkBG: darkBG });
     if (!s) return;
 
-    var phone = buildPhone3D(THREE);
-    phone.group.rotation.y = 0.2;
-    phone.group.rotation.x = -0.1;
-    s.scene.add(phone.group);
-
-    var disc = buildPureWaveDisc(THREE);
-    disc.group.scale.setScalar(0.55);
-    s.scene.add(disc.group);
-
     var shield = buildShieldField(THREE);
     s.scene.add(shield.group);
+
+    // Decorative center disc that slowly rotates with scroll
+    var disc = buildPureWaveDisc(THREE);
+    disc.group.scale.setScalar(0.35);
+    disc.group.rotation.x = -0.5;
+    s.scene.add(disc.group);
 
     var startTime = performance.now();
     var visible = false;
@@ -950,23 +951,16 @@
 
       var p = getBlockProgress(block);
 
-      var rotY = 0.2 + p * Math.PI * 0.8;
-      var rotX = -0.1 + Math.sin(t * 0.4) * 0.03;
-      phone.group.rotation.y = rotY;
-      phone.group.rotation.x = rotX;
-      phone.group.position.y = Math.sin(t * 0.8) * 0.04;
-
-      var qPhone = phone.group.quaternion.clone();
-      var qFlat = new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0));
-      disc.group.quaternion.copy(qPhone).multiply(qFlat);
-      var attached = new THREE.Vector3(0, 0.4, -0.09).applyEuler(phone.group.rotation).add(phone.group.position);
-      disc.group.position.copy(attached);
-
-      var intensity = smoothstep(0.1, 0.7, p);
+      var intensity = smoothstep(0.05, 0.55, p);
       shield.mat.uniforms.uIntensity.value = intensity;
-      shield.group.rotation.y = t * 0.15;
-      shield.group.rotation.x = Math.sin(t * 0.2) * 0.1;
+      shield.group.rotation.y = t * 0.2 + p * Math.PI;
+      shield.group.rotation.x = Math.sin(t * 0.25) * 0.12;
       shield.group.scale.setScalar(1.0 + Math.sin(t * 1.2) * 0.04 * intensity);
+
+      // Disc spins more dramatically through this scene
+      disc.group.rotation.y = p * Math.PI * 4 + t * 0.5;
+      disc.group.rotation.x = -0.5 + Math.sin(t * 0.6) * 0.15;
+      disc.group.position.y = Math.sin(t * 1.1) * 0.08;
 
       s.renderer.render(s.scene, s.camera);
     }
@@ -974,41 +968,57 @@
   }
 
   /* =================================================================
-   * SCENE: DISC ONLY (variety)
+   * FLOATING DISC — small decorative 3D disc placed inline mid-page
+   * Rotates with scroll, has some idle motion. Used between sections.
    * ================================================================= */
-  function initSceneDiscOnly(block) {
-    var mount = block.querySelector("[data-pw-feature-canvas]");
-    if (!mount) return;
-    var darkBG = block.classList.contains("dark");
-    var s = makeScene(THREE, mount, { fov: 38, camZ: 4.0, camY: 0.0, darkBG: darkBG });
-    if (!s) return;
-    var disc = buildPureWaveDisc(THREE);
-    s.scene.add(disc.group);
+  function initFloatingDiscs() {
+    if (typeof THREE === "undefined") return;
+    if (prefersReducedMotion) return;
+    if (isTinyMobile) return;
 
-    var startTime = performance.now();
-    var visible = false;
-    new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { visible = e.isIntersecting; });
-    }, { threshold: 0 }).observe(block);
+    var mounts = document.querySelectorAll("[data-pw-floating]");
+    if (!mounts.length) return;
 
-    function tick() {
-      requestAnimationFrame(tick);
-      if (!visible) return;
-      var t = (performance.now() - startTime) / 1000;
-      disc.holoMat.uniforms.uTime.value = t;
-      var p = getBlockProgress(block);
-      disc.group.rotation.x = lerp(-0.3, -0.8, p) + Math.sin(t * 0.4) * 0.03;
-      disc.group.rotation.y = lerp(0, Math.PI * 2, p);
-      disc.group.scale.setScalar(lerp(1.0, 0.7, p));
-      s.renderer.render(s.scene, s.camera);
-    }
-    tick();
+    mounts.forEach(function (mount) {
+      var s = makeScene(THREE, mount, { fov: 32, camZ: 4.0, camY: 0.2 });
+      if (!s) return;
+      var disc = buildPureWaveDisc(THREE);
+      var spin = parseFloat(mount.getAttribute("data-spin") || "0.005");
+      var tilt = parseFloat(mount.getAttribute("data-tilt") || "-0.3");
+      disc.group.rotation.x = tilt;
+      s.scene.add(disc.group);
+
+      var startTime = performance.now();
+      var visible = false;
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { visible = e.isIntersecting; });
+      }, { threshold: 0 }).observe(mount);
+
+      function tick() {
+        requestAnimationFrame(tick);
+        if (!visible) return;
+        var t = (performance.now() - startTime) / 1000;
+        disc.holoMat.uniforms.uTime.value = t;
+        // Get scroll progress for the disc through its container
+        var rect = mount.getBoundingClientRect();
+        var vh = window.innerHeight;
+        var visP = clamp(1 - (rect.top + rect.height / 2) / vh, 0, 1);
+        disc.group.rotation.y = visP * Math.PI * 3 + t * spin * 60;
+        disc.group.rotation.x = tilt + Math.sin(t * 0.7) * 0.1;
+        disc.group.position.y = Math.sin(t * 0.9) * 0.08;
+        s.renderer.render(s.scene, s.camera);
+      }
+      tick();
+    });
   }
 
+  /* =================================================================
+   * INIT scenes
+   * ================================================================= */
   function initScenes() {
     if (typeof THREE === "undefined") return;
     if (prefersReducedMotion) return;
-    if (isMobile && window.innerWidth < 480) return;
+    if (isTinyMobile) return;
 
     var blocks = document.querySelectorAll("[data-pw-scene]");
     blocks.forEach(function (block) {
@@ -1016,8 +1026,20 @@
       if (scene === "apply") initSceneApply(block);
       else if (scene === "emf") initSceneEMF(block);
       else if (scene === "shield") initSceneShield(block);
-      else if (scene === "disc") initSceneDiscOnly(block);
     });
+  }
+
+  /* =================================================================
+   * Header scroll behavior — slim down when scrolling
+   * ================================================================= */
+  function initHeaderScroll() {
+    var header = document.querySelector("header");
+    if (!header) return;
+    function update() {
+      header.classList.toggle("is-scrolled", window.scrollY > 60);
+    }
+    window.addEventListener("scroll", update, { passive: true });
+    update();
   }
 
   /* ============== INIT ============== */
@@ -1033,10 +1055,17 @@
     initCounters();
     initParallaxImages();
     initBarFill();
+    initMarqueeParallax();
+    initScrollTilt();
+    initScrollStats();
+    initMagneticButtons();
+    initHeaderScroll();
+
     function init3D(attempts) {
       if (typeof THREE !== "undefined") {
         initHero3D();
         initScenes();
+        initFloatingDiscs();
       } else if ((attempts || 0) < 100) {
         setTimeout(function () { init3D((attempts || 0) + 1); }, 60);
       }
